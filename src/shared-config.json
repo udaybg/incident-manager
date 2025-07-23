@@ -1,0 +1,252 @@
+{
+  "incident": {
+    "levels": [
+      { "value": "L2", "label": "L2" },
+      { "value": "L3", "label": "L3" },
+      { "value": "L4", "label": "L4" },
+      { "value": "L5", "label": "L5" }
+    ],
+    "scopes": [
+      { "value": "Low", "label": "Low" },
+      { "value": "Medium", "label": "Medium" },
+      { "value": "High", "label": "High" }
+    ],
+    "types": [
+      { "value": "Planned", "label": "Planned", "description": "Incidents caused due to planned activities" },
+      { "value": "Outage", "label": "Outage", "description": "Incidents caused due to an internal issue" },
+      { "value": "External", "label": "External", "description": "Incidents caused by an external service" },
+      { "value": "Test", "label": "Test", "description": "Test incidents for development and QA purposes" }
+    ],
+    "incidentTypes": [
+      { "value": "Planned", "label": "Planned", "description": "Incidents caused due to planned activities" },
+      { "value": "Outage", "label": "Outage", "description": "Incidents caused due to an internal issue" },
+      { "value": "External", "label": "External", "description": "Incidents caused by an external service" },
+      { "value": "Test", "label": "Test", "description": "Test incidents for development and QA purposes" }
+    ],
+    "statuses": [
+      { "value": "reported", "label": "Reported" },
+      { "value": "mitigating", "label": "Mitigating" },
+      { "value": "resolved", "label": "Resolved" },
+      { "value": "postmortem", "label": "Postmortem" },
+      { "value": "closed", "label": "Closed" }
+    ],
+    "impactOptions": [
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "Not known yet", "label": "Not known yet" }
+    ],
+    "safetyCompliance": [
+      { "value": "No", "label": "No" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "Not known yet", "label": "Not known yet" }
+    ],
+    "securityPrivacy": [
+      { "value": "No", "label": "No" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "Not known yet", "label": "Not known yet" }
+    ],
+    "dataQuality": [
+      { "value": "No", "label": "No" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "Not known yet", "label": "Not known yet" }
+    ],
+    "psd2Impact": [
+      { "value": "No", "label": "No" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "Not known yet", "label": "Not known yet" }
+    ],
+    "retroactive": [
+      { "value": "No", "label": "No" },
+      { "value": "Yes", "label": "Yes" }
+    ],
+    "global": [
+      { "value": "No", "label": "No" },
+      { "value": "Yes", "label": "Yes" }
+    ],
+    "sendEmailNotifications": [
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" }
+    ],
+    "timeFormats": [
+      { "value": "Local Time", "label": "Local Time" },
+      { "value": "UTC", "label": "UTC" }
+    ],
+    "detectionSources": [
+      { "value": "Manual", "label": "Manual" },
+      { "value": "Automated", "label": "Automated" }
+    ],
+    "impactedLocations": [
+      { "value": "North America", "label": "North America" },
+      { "value": "Europe", "label": "Europe" },
+      { "value": "Asia Pacific", "label": "Asia Pacific" },
+      { "value": "Latin America", "label": "Latin America" },
+      { "value": "Middle East & Africa", "label": "Middle East & Africa" },
+      { "value": "Global", "label": "Global" },
+      { "value": "US Only", "label": "US Only" },
+      { "value": "EU Only", "label": "EU Only" }
+    ],
+    "impactedParties": [
+      { "value": "Riders", "label": "Riders" },
+      { "value": "Drivers", "label": "Drivers" },
+      { "value": "Restaurants", "label": "Restaurants" },
+      { "value": "Delivery Partners", "label": "Delivery Partners" },
+      { "value": "Merchants", "label": "Merchants" },
+      { "value": "Internal Users", "label": "Internal Users" },
+      { "value": "Third Party Partners", "label": "Third Party Partners" },
+      { "value": "External APIs", "label": "External APIs" }
+    ],
+    "reportingOrganizations": [
+      { "value": "Delivery / Discovery and Monetization / Offers", "label": "Delivery / Discovery and Monetization / Offers" },
+      { "value": "Engineering / Backend Services", "label": "Engineering / Backend Services" },
+      { "value": "Engineering / Frontend", "label": "Engineering / Frontend" },
+      { "value": "Data Science / Analytics", "label": "Data Science / Analytics" },
+      { "value": "Security / Privacy", "label": "Security / Privacy" },
+      { "value": "Operations / Infrastructure", "label": "Operations / Infrastructure" },
+      { "value": "Product Management", "label": "Product Management" },
+      { "value": "Customer Support", "label": "Customer Support" }
+    ],
+    "reportingOrg": [
+      { "value": "Delivery / Discovery and Monetization / Offers", "label": "Delivery / Discovery and Monetization / Offers" },
+      { "value": "Engineering / Backend Services", "label": "Engineering / Backend Services" },
+      { "value": "Engineering / Frontend", "label": "Engineering / Frontend" },
+      { "value": "Data Science / Analytics", "label": "Data Science / Analytics" },
+      { "value": "Security / Privacy", "label": "Security / Privacy" },
+      { "value": "Operations / Infrastructure", "label": "Operations / Infrastructure" },
+      { "value": "Product Management", "label": "Product Management" },
+      { "value": "Customer Support", "label": "Customer Support" }
+    ],
+    "incidentCommanders": [
+      { "value": "", "label": "Select incident commander..." },
+      { "value": "uday@uber.com", "label": "uday@uber.com" },
+      { "value": "john.doe@uber.com", "label": "john.doe@uber.com" },
+      { "value": "jane.smith@uber.com", "label": "jane.smith@uber.com" },
+      { "value": "mike.johnson@uber.com", "label": "mike.johnson@uber.com" },
+      { "value": "sarah.wilson@uber.com", "label": "sarah.wilson@uber.com" }
+    ],
+    "timeToMitigationOptions": [
+      { "value": "unknown", "label": "unknown" },
+      { "value": "< 1 hour", "label": "< 1 hour" },
+      { "value": "1-4 hours", "label": "1-4 hours" },
+      { "value": "4-24 hours", "label": "4-24 hours" },
+      { "value": "> 24 hours", "label": "> 24 hours" }
+    ],
+    "estimatedTimeToMitigation": [
+      { "value": "unknown", "label": "unknown" },
+      { "value": "< 1 hour", "label": "< 1 hour" },
+      { "value": "1-4 hours", "label": "1-4 hours" },
+      { "value": "4-24 hours", "label": "4-24 hours" },
+      { "value": "> 24 hours", "label": "> 24 hours" }
+    ],
+    "detectionLocationOptions": [
+      { "value": "Region or zone", "label": "Region or zone" },
+      { "value": "Single datacenter", "label": "Single datacenter" },
+      { "value": "Multiple datacenters", "label": "Multiple datacenters" },
+      { "value": "Global", "label": "Global" }
+    ],
+    "firstDetectedIn": [
+      { "value": "Region or zone", "label": "Region or zone" },
+      { "value": "Single datacenter", "label": "Single datacenter" },
+      { "value": "Multiple datacenters", "label": "Multiple datacenters" },
+      { "value": "Global", "label": "Global" }
+    ],
+    "impactedAssetsOptions": [
+      { "value": "AWS service", "label": "AWS service" },
+      { "value": "Dataset", "label": "Dataset" },
+      { "value": "Application", "label": "Application" },
+      { "value": "Database", "label": "Database" },
+      { "value": "API", "label": "API" },
+      { "value": "Load balancer", "label": "Load balancer" },
+      { "value": "CDN", "label": "CDN" },
+      { "value": "Network", "label": "Network" }
+    ],
+    "impactedAssets": [
+      { "value": "", "label": "Select impacted assets..." },
+      { "value": "AWS service", "label": "AWS service" },
+      { "value": "Dataset", "label": "Dataset" },
+      { "value": "Application", "label": "Application" },
+      { "value": "Database", "label": "Database" },
+      { "value": "API", "label": "API" },
+      { "value": "Load balancer", "label": "Load balancer" },
+      { "value": "CDN", "label": "CDN" },
+      { "value": "Network", "label": "Network" }
+    ],
+    "impactedAreasOptions": [
+      { "value": "Infrastructure", "label": "Infrastructure" },
+      { "value": "Application", "label": "Application" },
+      { "value": "Data Pipeline", "label": "Data Pipeline" },
+      { "value": "API Gateway", "label": "API Gateway" },
+      { "value": "Authentication", "label": "Authentication" },
+      { "value": "Payment Processing", "label": "Payment Processing" },
+      { "value": "Notification Service", "label": "Notification Service" }
+    ],
+    "impactedAreas": [
+      { "value": "", "label": "Select impacted areas..." },
+      { "value": "Infrastructure", "label": "Infrastructure" },
+      { "value": "Application", "label": "Application" },
+      { "value": "Data Pipeline", "label": "Data Pipeline" },
+      { "value": "API Gateway", "label": "API Gateway" },
+      { "value": "Authentication", "label": "Authentication" },
+      { "value": "Payment Processing", "label": "Payment Processing" },
+      { "value": "Notification Service", "label": "Notification Service" }
+    ],
+    "additionalSubscribers": [
+      { "value": "", "label": "Enter email addresses..." }
+    ],
+    "tooltips": {
+      "incidentCommander": "Email address for the engineer on point for communications during the incident. If blank, defaults to the creator of the incident.",
+      "level": {
+        "title": "Incident Level Guidelines",
+        "sections": [
+          {
+            "level": "Level 2 (L2)",
+            "description": "Minor impact incidents",
+            "details": ["Limited user impact", "Non-critical system degradation", "Workarounds available"]
+          },
+          {
+            "level": "Level 3 (L3)", 
+            "description": "Moderate impact incidents",
+            "details": ["Noticeable user impact", "Service degradation", "Multiple users affected"]
+          },
+          {
+            "level": "Level 4 (L4)",
+            "description": "High impact incidents", 
+            "details": ["Significant user impact", "Major service disruption", "Business functions affected"]
+          },
+          {
+            "level": "Level 5 (L5)",
+            "description": "Critical impact incidents",
+            "details": ["Severe user impact", "Complete service outage", "Revenue affecting", "Requires immediate attention"]
+          }
+        ]
+      },
+      "scope": {
+        "title": "Incident Scope Guidelines",
+        "sections": [
+          {
+            "level": "Low Scope",
+            "description": "Limited geographical or functional impact",
+            "details": ["Single region affected", "Specific service component", "Limited user subset", "Minimal business impact"]
+          },
+          {
+            "level": "Medium Scope",
+            "description": "Moderate geographical or functional impact", 
+            "details": ["Multiple regions affected", "Core service functionality", "Significant user base", "Notable business impact"]
+          },
+          {
+            "level": "High Scope",
+            "description": "Wide geographical or functional impact",
+            "details": ["Global or multi-regional", "Critical business functions", "Large user population", "Major business impact"]
+          }
+        ]
+      },
+      "safetyCompliance": "Indicate if this incident affects safety or compliance requirements",
+      "securityPrivacy": "Indicate if this incident affects security or privacy",
+      "dataQuality": "Indicate if this incident affects data quality",
+      "psd2Impact": "Indicate if this incident affects PSD2 compliance",
+      "incidentType": "Select the type of incident based on its origin and nature",
+      "detectionSource": "How was this incident first detected?",
+      "impactedAssets": "List all systems, services, or assets affected by this incident",
+      "additionalSubscribers": "Add email addresses for additional stakeholders who should be notified about this incident"
+    }
+  }
+} 
