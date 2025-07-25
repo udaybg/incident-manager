@@ -460,11 +460,13 @@ const IncidentCreationPage = () => {
                   </div>
 
                   <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
+                    <div className="mb-2">
+                      <label className="inline text-sm font-medium text-gray-700">
                         Does this incident impact data quality: data missing, incorrect, corrupted?
                       </label>
-                      <Tooltip content={getTooltipContent('dataQuality')} />
+                      <span className="ml-2">
+                        <Tooltip content={getTooltipContent('dataQuality')} />
+                      </span>
                     </div>
                     <ToggleButtons
                       options={getOptionsForField('impactOptions')}
