@@ -35,7 +35,6 @@ class IncidentSerializer(serializers.ModelSerializer):
     
     documents = IncidentDocumentSerializer(many=True, read_only=True)
     updates = IncidentUpdateSerializer(many=True, read_only=True)
-    related_documents = serializers.JSONField(required=False, allow_null=True)
     impacted_locations = serializers.JSONField(required=False, allow_null=True)
     impacted_parties = serializers.JSONField(required=False, allow_null=True)
     
@@ -54,8 +53,7 @@ class IncidentSerializer(serializers.ModelSerializer):
             'incident_type', 'impacted_locations', 'impacted_parties',
             'incident_commander', 'reporting_org', 'estimated_time_to_mitigation',
             'first_detected_in', 'impacted_assets', 'impacted_areas',
-            'additional_subscribers', 'related_documents',
-            'safety_compliance_document_url', 'l5_confirmation',
+            'additional_subscribers', 'safety_compliance_document_url', 'l5_confirmation',
             'mitigation_policy_acknowledgment', 'send_email_notifications',
             'status', 'created_at', 'updated_at', 'created_by',
             
@@ -69,46 +67,18 @@ class IncidentSerializer(serializers.ModelSerializer):
         ]
     
     def create(self, validated_data):
-        """Create incident and handle related documents."""
-        related_documents_data = validated_data.pop('related_documents', [])
-        
+        """Create incident."""
         # Create the incident
         incident = Incident.objects.create(**validated_data)
-        
-        # Create related documents if any
-        self._create_related_documents(incident, related_documents_data)
-        
         return incident
     
     def update(self, instance, validated_data):
-        """Update incident and handle related documents."""
-        related_documents_data = validated_data.pop('related_documents', None)
-        
+        """Update incident."""
         # Update the incident
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
-        
-        # Update related documents if provided
-        if related_documents_data is not None:
-            # Clear existing documents and create new ones
-            instance.documents.all().delete()
-            self._create_related_documents(instance, related_documents_data)
-        
         return instance
-    
-    def _create_related_documents(self, incident, documents_data):
-        """Helper method to create related documents."""
-        if not documents_data:
-            return
-            
-        for doc_data in documents_data:
-            if isinstance(doc_data, dict) and doc_data.get('title') and doc_data.get('url'):
-                IncidentDocument.objects.create(
-                    incident=incident,
-                    title=doc_data['title'],
-                    url=doc_data['url']
-                )
     
     def validate_started_at(self, value):
         """Validate started_at datetime."""
@@ -191,10 +161,9 @@ class IncidentCreateSerializer(serializers.ModelSerializer):
     reportingOrg = serializers.CharField(write_only=True, source='reporting_org', required=False)
     estimatedTimeToMitigation = serializers.CharField(write_only=True, source='estimated_time_to_mitigation', required=False, allow_blank=True)
     firstDetectedIn = serializers.CharField(write_only=True, source='first_detected_in', required=False, allow_blank=True)
-    impactedAssets = serializers.CharField(write_only=True, source='impacted_assets', required=False, allow_blank=True)
-    impactedAreas = serializers.CharField(write_only=True, source='impacted_areas', required=False, allow_blank=True)
+    impactedAssets = serializers.JSONField(write_only=True, source='impacted_assets', required=False)
+    impactedAreas = serializers.JSONField(write_only=True, source='impacted_areas', required=False)
     additionalSubscribers = serializers.CharField(write_only=True, source='additional_subscribers', required=False, allow_blank=True)
-    relatedDocuments = serializers.JSONField(write_only=True, source='related_documents', required=False)
     l5Confirmation = serializers.BooleanField(write_only=True, source='l5_confirmation', required=False)
     mitigationPolicyAcknowledgment = serializers.BooleanField(write_only=True, source='mitigation_policy_acknowledgment', required=False)
     sendEmailNotifications = serializers.BooleanField(write_only=True, source='send_email_notifications', required=False)
@@ -209,35 +178,15 @@ class IncidentCreateSerializer(serializers.ModelSerializer):
             'incidentType', 'impactedLocations', 'impactedParties',
             'incidentCommander', 'reportingOrg', 'estimatedTimeToMitigation',
             'firstDetectedIn', 'impactedAssets', 'impactedAreas',
-            'additionalSubscribers', 'relatedDocuments',
-            'l5Confirmation', 'mitigationPolicyAcknowledgment',
+            'additionalSubscribers', 'l5Confirmation', 'mitigationPolicyAcknowledgment',
             'sendEmailNotifications', 'scImpactDocumentUrl'
         ]
     
     def create(self, validated_data):
         """Create incident from React form data."""
-        related_documents_data = validated_data.pop('related_documents', [])
-        
         # Set defaults for missing fields
         validated_data.setdefault('status', 'reported')
         
         # Create the incident
         incident = Incident.objects.create(**validated_data)
-        
-        # Create related documents
-        self._create_related_documents(incident, related_documents_data)
-        
         return incident
-    
-    def _create_related_documents(self, incident, documents_data):
-        """Helper method to create related documents."""
-        if not documents_data:
-            return
-            
-        for doc_data in documents_data:
-            if isinstance(doc_data, dict) and doc_data.get('title') and doc_data.get('url'):
-                IncidentDocument.objects.create(
-                    incident=incident,
-                    title=doc_data['title'],
-                    url=doc_data['url']
-                ) 

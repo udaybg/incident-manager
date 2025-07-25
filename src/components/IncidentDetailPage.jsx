@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   Card, CardHeader, CardTitle, CardContent, Button, Badge, Input, Textarea,
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue, MultiSelect, Checkbox
 } from './ui/index.js';
 import { 
   Calendar, User, MapPin, Users, AlertTriangle, 
@@ -280,6 +280,11 @@ const IncidentDetailPage = () => {
       psd2_impact: incident.psd2_impact || incident.psd2Impact,
       impacted_areas: incident.impacted_areas || incident.impactedAreas,
       impacted_assets: incident.impacted_assets || incident.impactedAssets,
+      impacted_parties: incident.impacted_parties || incident.impactedParties || [],
+      impacted_locations: incident.impacted_locations || incident.impactedLocations || [],
+      related_documents: incident.documents || [],
+      l5_confirmation: incident.l5_confirmation || false,
+      mitigation_policy_acknowledgment: incident.mitigation_policy_acknowledgment || false,
     });
     setIsEditMode(true);
   };
@@ -287,40 +292,55 @@ const IncidentDetailPage = () => {
   const handleSaveChanges = async () => {
     setIsSaving(true);
     try {
+      const updateData = {
+        title: editedIncident.title,
+        description: editedIncident.description,
+        level: editedIncident.level,
+        scope: editedIncident.scope,
+        safety_compliance: editedIncident.safety_compliance,
+        security_privacy: editedIncident.security_privacy,
+        data_quality: editedIncident.data_quality,
+        psd2_impact: editedIncident.psd2_impact,
+        incident_commander: editedIncident.incident_commander,
+        reporting_org: editedIncident.reporting_org,
+        detection_source: editedIncident.detection_source,
+        impacted_areas: editedIncident.impacted_areas,
+        impacted_assets: editedIncident.impacted_assets,
+        impacted_parties: editedIncident.impacted_parties,
+        impacted_locations: editedIncident.impacted_locations,
+        l5_confirmation: editedIncident.l5_confirmation || incident.l5_confirmation || false,
+        mitigation_policy_acknowledgment: editedIncident.mitigation_policy_acknowledgment || incident.mitigation_policy_acknowledgment || false,
+      };
+
+      console.log('Saving incident with data:', updateData);
+
       const response = await fetch(`http://localhost:8000/api/v1/incidents/${id}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          title: editedIncident.title,
-          description: editedIncident.description,
-          level: editedIncident.level,
-          scope: editedIncident.scope,
-          safety_compliance: editedIncident.safety_compliance,
-          security_privacy: editedIncident.security_privacy,
-          data_quality: editedIncident.data_quality,
-          psd2_impact: editedIncident.psd2_impact,
-          incident_commander: editedIncident.incident_commander,
-          reporting_org: editedIncident.reporting_org,
-          detection_source: editedIncident.detection_source,
-          impacted_areas: editedIncident.impacted_areas,
-          impacted_assets: editedIncident.impacted_assets,
-        }),
+        body: JSON.stringify(updateData),
       });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
 
       if (response.ok) {
         const updatedIncident = await response.json();
+        console.log('Updated incident data:', updatedIncident);
         setIncident(updatedIncident);
         setIsEditMode(false);
         setEditedIncident({});
         alert('Incident updated successfully!');
       } else {
-        alert('Failed to update incident');
+        const errorData = await response.json().catch(() => null);
+        console.error('Update failed. Status:', response.status);
+        console.error('Error response:', errorData);
+        alert(`Failed to update incident. Status: ${response.status}. Error: ${JSON.stringify(errorData, null, 2)}`);
       }
     } catch (error) {
       console.error('Error updating incident:', error);
-      alert('Network error occurred');
+      alert(`Network error occurred: ${error.message}`);
     } finally {
       setIsSaving(false);
     }
@@ -392,8 +412,8 @@ const IncidentDetailPage = () => {
                  <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-1">
                     <div className="flex-1">
-                      {/* Level & Scope Badge and Title on same line */}
-                      <div className="flex items-center space-x-4 mb-1">
+                      {/* Level & Scope Badge - separate line */}
+                      <div className="mb-2">
                         {!isEditMode ? (
                           <div className="flex items-center font-bold text-xs">
                             {/* Level part - colored background with combination-based border */}
@@ -429,6 +449,10 @@ const IncidentDetailPage = () => {
                             </Select>
                           </div>
                         )}
+                      </div>
+
+                      {/* Title - separate line */}
+                      <div className="mb-1">
                         {!isEditMode ? (
                           <h1 className="text-2xl font-bold text-gray-900">{incident.title}</h1>
                         ) : (
@@ -444,7 +468,7 @@ const IncidentDetailPage = () => {
                   </div>
 
                   {/* Description */}
-                  <div className="mb-1">
+                  <div className="mb-4">
                     {!isEditMode ? (
                       <p className="text-gray-700">{incident.description}</p>
                     ) : (
@@ -458,23 +482,8 @@ const IncidentDetailPage = () => {
                     )}
                   </div>
 
-                  {/* Incident Commander */}
-                  <div className="mb-4">
-                    {!isEditMode ? (
-                      <p className="text-blue-600 underline cursor-pointer">{incident.incidentCommander || 'Not assigned'}</p>
-                    ) : (
-                      <Input
-                        type="email"
-                        value={editedIncident.incident_commander || ''}
-                        onChange={(e) => handleFieldChange('incident_commander', e.target.value)}
-                        className="text-blue-600 border-2 border-blue-500"
-                        placeholder="commander@company.com"
-                      />
-                    )}
-                  </div>
-
                   {/* Status Progression */}
-                  <div className="mb-2">
+                  <div className="mb-0">
                     <StatusProgression currentStatus={incident.status} />
                   </div>
                 </CardContent>
@@ -609,8 +618,18 @@ const IncidentDetailPage = () => {
                    <div className="space-y-2 text-xs">
                     
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Author</span>
-                      <span className="font-medium">{incident.incidentCommander || 'Not assigned'}</span>
+                      <span className="text-gray-600">Commander</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.incident_commander || 'Not assigned'}</span>
+                      ) : (
+                        <Input
+                          type="email"
+                          value={editedIncident.incident_commander || ''}
+                          onChange={(e) => handleFieldChange('incident_commander', e.target.value)}
+                          className="text-xs font-medium border border-blue-500 w-32"
+                          placeholder="commander@company.com"
+                        />
+                      )}
                     </div>
 
                     <div className="flex justify-between">
@@ -621,27 +640,27 @@ const IncidentDetailPage = () => {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Started</span>
                       <div className="text-right">
-                        <div className="font-medium">{formatDateTime(incident.startedAt)}</div>
+                        <div className="font-medium">{formatDateTime(incident.started_at)}</div>
                       </div>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">Detected</span>
                       <div className="text-right">
-                        <div className="font-medium">{formatDateTime(incident.incidentDetectedAt)}</div>
+                        <div className="font-medium">{formatDateTime(incident.detected_at)}</div>
                       </div>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">Reported</span>
                       <div className="text-right">
-                        <div className="font-medium">{formatDateTime(incident.createdAt || incident.startedAt)}</div>
+                        <div className="font-medium">{formatDateTime(incident.created_at || incident.started_at)}</div>
                       </div>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">TTD</span>
-                      <span className="font-medium">{calculateTTD(incident.startedAt, incident.incidentDetectedAt)}</span>
+                      <span className="font-medium">{calculateTTD(incident.started_at, incident.detected_at)}</span>
                     </div>
 
                     <div className="flex justify-between">
@@ -649,22 +668,25 @@ const IncidentDetailPage = () => {
                       <span className="font-medium">{incident.incidentType?.toUpperCase() || 'PLANNED'}</span>
                     </div>
 
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Flags</span>
-                      <span className="font-medium">None</span>
-                    </div>
+
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">Reporting Org</span>
                       {!isEditMode ? (
                         <span className="font-medium">{incident.reportingOrg || incident.reporting_org || 'Not specified'}</span>
                       ) : (
-                        <Input
-                          value={editedIncident.reporting_org || ''}
-                          onChange={(e) => handleFieldChange('reporting_org', e.target.value)}
-                          className="text-xs font-medium border border-blue-500 w-32"
-                          placeholder="Organization"
-                        />
+                        <Select value={editedIncident.reporting_org || ''} onValueChange={(value) => handleFieldChange('reporting_org', value)}>
+                          <SelectTrigger className="text-xs font-medium border border-blue-500 w-32">
+                            <SelectValue placeholder="Select organization" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getOptionsForField('reportingOrg').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       )}
                     </div>
 
@@ -680,12 +702,18 @@ const IncidentDetailPage = () => {
                       {!isEditMode ? (
                         <span className="font-medium">{incident.detectionSource || incident.detection_source || 'Manual'}</span>
                       ) : (
-                        <Input
-                          value={editedIncident.detection_source || ''}
-                          onChange={(e) => handleFieldChange('detection_source', e.target.value)}
-                          className="text-xs font-medium border border-blue-500 w-32"
-                          placeholder="Source"
-                        />
+                        <Select value={editedIncident.detection_source || ''} onValueChange={(value) => handleFieldChange('detection_source', value)}>
+                          <SelectTrigger className="text-xs font-medium border border-blue-500 w-32">
+                            <SelectValue placeholder="Select source" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getOptionsForField('detectionSources').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       )}
                     </div>
 
@@ -736,66 +764,238 @@ const IncidentDetailPage = () => {
                       {!isEditMode ? (
                         <span className="font-medium">{incident.psd2Impact || incident.psd2_impact || 'Not known yet'}</span>
                       ) : (
-                        <Input
-                          value={editedIncident.psd2_impact || ''}
-                          onChange={(e) => handleFieldChange('psd2_impact', e.target.value)}
-                          className="text-xs font-medium border border-blue-500 w-32"
-                          placeholder="Impact"
-                        />
+                        <Select value={editedIncident.psd2_impact || ''} onValueChange={(value) => handleFieldChange('psd2_impact', value)}>
+                          <SelectTrigger className="text-xs font-medium border border-blue-500 w-32">
+                            <SelectValue placeholder="Select impact" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getOptionsForField('impactOptions').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       )}
                     </div>
 
+                    {/* L5 Confirmation Fields - only show for L5 incidents */}
+                    {(incident.level === 'L5' || (isEditMode && editedIncident.level === 'L5')) && (
+                      <>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">L5 Confirmation</span>
+                          {!isEditMode ? (
+                            <span className="font-medium">{incident.l5_confirmation ? 'Confirmed' : 'Not confirmed'}</span>
+                          ) : (
+                            <Checkbox
+                              checked={editedIncident.l5_confirmation || false}
+                              onCheckedChange={(checked) => handleFieldChange('l5_confirmation', checked)}
+                              className="border-blue-500"
+                            />
+                          )}
+                        </div>
+
+                        {/* Mitigation Policy Acknowledgment - only for L5 Medium/High */}
+                        {((incident.scope === 'Medium' || incident.scope === 'High') || 
+                          (isEditMode && (editedIncident.scope === 'Medium' || editedIncident.scope === 'High'))) && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Mitigation Policy</span>
+                            {!isEditMode ? (
+                              <span className="font-medium">{incident.mitigation_policy_acknowledgment ? 'Acknowledged' : 'Not acknowledged'}</span>
+                            ) : (
+                              <Checkbox
+                                checked={editedIncident.mitigation_policy_acknowledgment || false}
+                                onCheckedChange={(checked) => handleFieldChange('mitigation_policy_acknowledgment', checked)}
+                                className="border-blue-500"
+                              />
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+
                     <div className="flex justify-between">
                       <span className="text-gray-600">Impacted Parties</span>
-                      <span className="font-medium">
-                        {incident.impactedParties && incident.impactedParties.length > 0 
-                          ? incident.impactedParties.join(', ') 
-                          : 'None'}
-                      </span>
+                      {!isEditMode ? (
+                        <span className="font-medium text-right">
+                          {incident.impacted_parties && incident.impacted_parties.length > 0
+                            ? incident.impacted_parties.join(', ')
+                            : 'None'}
+                        </span>
+                      ) : (
+                        <MultiSelect
+                          values={editedIncident.impacted_parties || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_parties', values)}
+                          placeholder="Select parties"
+                          className="text-xs font-medium border border-blue-500 w-32"
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedParties').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
+                      )}
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">Impacted Areas</span>
                       {!isEditMode ? (
-                        <span className="font-medium">{incident.impactedAreas || 'None'}</span>
+                        <span className="font-medium text-right">
+                          {incident.impacted_areas && incident.impacted_areas.length > 0
+                            ? incident.impacted_areas.join(', ')
+                            : 'None'}
+                        </span>
                       ) : (
-                        <Input
-                          value={editedIncident.impacted_areas || ''}
-                          onChange={(e) => handleFieldChange('impacted_areas', e.target.value)}
+                        <MultiSelect
+                          values={editedIncident.impacted_areas || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_areas', values)}
+                          placeholder="Select areas"
                           className="text-xs font-medium border border-blue-500 w-32"
-                          placeholder="Areas"
-                        />
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedAreas').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
                       )}
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">Impacted Assets</span>
                       {!isEditMode ? (
-                        <span className="font-medium">{incident.impactedAssets || 'None'}</span>
+                        <span className="font-medium text-right">
+                          {incident.impacted_assets && incident.impacted_assets.length > 0
+                            ? incident.impacted_assets.join(', ')
+                            : 'None'}
+                        </span>
                       ) : (
-                        <Input
-                          value={editedIncident.impacted_assets || ''}
-                          onChange={(e) => handleFieldChange('impacted_assets', e.target.value)}
+                        <MultiSelect
+                          values={editedIncident.impacted_assets || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_assets', values)}
+                          placeholder="Select assets"
                           className="text-xs font-medium border border-blue-500 w-32"
-                          placeholder="Assets"
-                        />
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedAssets').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
                       )}
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">Impacted Locations</span>
-                      <span className="font-medium">
-                        {incident.impactedLocations && incident.impactedLocations.length > 0 
-                          ? incident.impactedLocations.join(', ') 
-                          : 'None'}
-                      </span>
+                      {!isEditMode ? (
+                        <span className="font-medium text-right">
+                          {incident.impacted_locations && incident.impacted_locations.length > 0
+                            ? incident.impacted_locations.join(', ')
+                            : 'None'}
+                        </span>
+                      ) : (
+                        <MultiSelect
+                          values={editedIncident.impacted_locations || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_locations', values)}
+                          placeholder="Select locations"
+                          className="text-xs font-medium border border-blue-500 w-32"
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedLocations').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
+                      )}
                     </div>
 
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Related Documents</span>
-                      <Button variant="ghost" size="sm" className="p-1 h-6 w-6">
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Related Documents</span>
+                        {isEditMode && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-1 h-6 w-6"
+                            onClick={() => {
+                              const currentDocs = editedIncident.related_documents || [];
+                              handleFieldChange('related_documents', [...currentDocs, { title: '', url: '' }]);
+                            }}
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {/* Display existing documents */}
+                      {!isEditMode ? (
+                        <div className="space-y-1">
+                          {incident.documents && incident.documents.length > 0 ? (
+                            incident.documents.map((doc, index) => (
+                              <div key={index} className="text-xs">
+                                <a 
+                                  href={doc.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-800 underline font-medium"
+                                >
+                                  {doc.title || 'Untitled Document'}
+                                </a>
+                              </div>
+                            ))
+                          ) : (
+                            <span className="text-xs font-medium text-right">None</span>
+                          )}
+                        </div>
+                      ) : (
+                        /* Edit mode - show editable inputs */
+                        <div className="space-y-2">
+                          {(editedIncident.related_documents || []).map((doc, index) => (
+                            <div key={index} className="flex space-x-2 items-center">
+                              <Input
+                                value={doc.title || doc.description || ''}
+                                onChange={(e) => {
+                                  const docs = [...(editedIncident.related_documents || [])];
+                                  docs[index] = { ...docs[index], title: e.target.value, description: e.target.value };
+                                  handleFieldChange('related_documents', docs);
+                                }}
+                                className="text-xs border border-blue-500 flex-1"
+                                placeholder="Document title"
+                              />
+                              <Input
+                                value={doc.url || ''}
+                                onChange={(e) => {
+                                  const docs = [...(editedIncident.related_documents || [])];
+                                  docs[index] = { ...docs[index], url: e.target.value };
+                                  handleFieldChange('related_documents', docs);
+                                }}
+                                className="text-xs border border-blue-500 flex-1"
+                                placeholder="Document URL"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="p-1 h-6 w-6 text-red-500"
+                                onClick={() => {
+                                  const docs = (editedIncident.related_documents || []).filter((_, i) => i !== index);
+                                  handleFieldChange('related_documents', docs);
+                                }}
+                              >
+                                ×
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                   </div>

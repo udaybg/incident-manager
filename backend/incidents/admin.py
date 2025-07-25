@@ -60,7 +60,7 @@ class IncidentAdmin(admin.ModelAdmin):
             'fields': (
                 'estimated_time_to_mitigation', 'first_detected_in',
                 'impacted_assets', 'impacted_areas',
-                'additional_subscribers', 'related_documents'
+                'additional_subscribers'
             ),
             'classes': ['collapse']
         }),

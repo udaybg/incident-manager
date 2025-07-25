@@ -59,7 +59,7 @@ const IncidentCreationPage = () => {
     classification: true,
     timeline: true,
     impact: true,
-    additional: false
+    additional: true
   });
 
   // Load saved draft on component mount
@@ -179,16 +179,15 @@ const IncidentCreationPage = () => {
           timeFormat: incident.timeFormat,
           detectionSource: incident.detectionSource,
           incidentType: incident.incidentType,
-          impactedLocations: incident.impactedLocations,
-          impactedParties: incident.impactedParties,
+          impactedLocations: Array.isArray(incident.impactedLocations) ? incident.impactedLocations : [],
+          impactedParties: Array.isArray(incident.impactedParties) ? incident.impactedParties : [],
           incidentCommander: incident.incidentCommander,
           reportingOrg: incident.reportingOrg,
           estimatedTimeToMitigation: incident.estimatedTimeToMitigation,
           firstDetectedIn: incident.firstDetectedIn,
-          impactedAssets: incident.impactedAssets,
-          impactedAreas: incident.impactedAreas,
+          impactedAssets: Array.isArray(incident.impactedAssets) ? incident.impactedAssets : [],
+          impactedAreas: Array.isArray(incident.impactedAreas) ? incident.impactedAreas : [],
           additionalSubscribers: incident.additionalSubscribers,
-          relatedDocuments: incident.relatedDocuments,
           l5Confirmation: incident.l5Confirmation,
           mitigationPolicyAcknowledgment: incident.mitigationPolicyAcknowledgment,
           sendEmailNotifications: incident.sendEmailNotifications,
@@ -218,6 +217,7 @@ const IncidentCreationPage = () => {
         } else {
           const errorData = await response.json();
           console.error('Error creating incident:', errorData);
+          console.error('Response status:', response.status);
           
           // Handle validation errors from backend
           if (response.status === 400 && errorData) {
@@ -229,8 +229,9 @@ const IncidentCreationPage = () => {
                 backendErrors[key] = errorData[key];
               }
             });
+            console.error('Processed backend errors:', backendErrors);
             setErrors(prev => ({ ...prev, ...backendErrors }));
-            alert('Please fix the errors and try again.');
+            alert(`Please fix the errors and try again. Backend errors: ${JSON.stringify(errorData, null, 2)}`);
           } else {
             alert('Error reporting incident. Please try again.');
           }
@@ -278,14 +279,13 @@ const IncidentCreationPage = () => {
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      Incident Title
+                      Incident Title *
                     </label>
                     <Tooltip content={getTooltipContent('title')} />
                   </div>
                   <Input
                     value={incident.title}
                     onChange={(e) => updateIncident('title', e.target.value)}
-                    placeholder="Brief description of the incident"
                     className={`w-full ${errors.title ? 'border-red-500' : ''}`}
                   />
                   {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
@@ -295,14 +295,13 @@ const IncidentCreationPage = () => {
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      Description
+                      Description *
                     </label>
                     <Tooltip content={getTooltipContent('description')} />
                   </div>
                   <Textarea
                     value={incident.description}
                     onChange={(e) => updateIncident('description', e.target.value)}
-                    placeholder="Detailed description of the incident"
                     rows={4}
                     className={`w-full ${errors.description ? 'border-red-500' : ''}`}
                   />
@@ -408,85 +407,53 @@ const IncidentCreationPage = () => {
                   </div>
                 </div>
 
-                {/* Contact Information */}
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Incident Commander
+                {/* L5 Confirmations */}
+                {(incident.level === 'L5' && incident.scope) && (
+                  <div className="space-y-2">
+                    {/* First checkbox - shows for all L5 levels */}
+                    <div>
+                      <label className="flex items-center space-x-2">
+                        <Checkbox
+                          checked={incident.l5Confirmation}
+                          onCheckedChange={(checked) => updateIncident('l5Confirmation', checked)}
+                        />
+                        <AlertTriangle className={`h-4 w-4 ${
+                          incident.scope === 'High' ? 'text-red-600' : 
+                          incident.scope === 'Medium' ? 'text-orange-600' : 
+                          'text-gray-600'
+                        }`} />
+                        <span className={`text-sm font-medium ${
+                          incident.scope === 'High' ? 'text-red-600' : 
+                          incident.scope === 'Medium' ? 'text-orange-600' : 
+                          'text-gray-900'
+                        }`}>
+                          I confirm this is an L5 incident and understand the implications
+                        </span>
                       </label>
-                      <Tooltip content={getTooltipContent('incidentCommander')} />
+                      {errors.l5Confirmation && <p className="text-red-500 text-sm ml-6">{errors.l5Confirmation}</p>}
                     </div>
-                    <Input
-                      type="email"
-                      value={incident.incidentCommander}
-                      onChange={(e) => updateIncident('incidentCommander', e.target.value)}
-                      placeholder="commander@company.com"
-                    />
-                  </div>
 
-                  <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Reporting Organization
-                      </label>
-                      <Tooltip content={getTooltipContent('reportingOrg')} />
-                    </div>
-                    <Select value={incident.reportingOrg} onValueChange={(value) => updateIncident('reportingOrg', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select reporting organization" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getOptionsForField('reportingOrg').map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* L5 Warning */}
-                {shouldShowL5Warning(incident.level, incident.scope) && (
-                  <Alert className="border-orange-200 bg-orange-50">
-                    <AlertTriangle className="h-4 w-4 text-orange-600" />
-                    <AlertDescription className="text-orange-800">
-                      <div className="space-y-2">
-                        <p>This is a high-severity incident. Please ensure all stakeholders are notified immediately.</p>
-                        <label className="flex items-center space-x-2">
-                          <Checkbox
-                            checked={incident.l5Confirmation}
-                            onCheckedChange={(checked) => updateIncident('l5Confirmation', checked)}
-                          />
-                          <span className="text-sm">I confirm this is an L5 incident and understand the implications</span>
-                        </label>
-                        {errors.l5Confirmation && <p className="text-red-500 text-sm">{errors.l5Confirmation}</p>}
-                      </div>
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                {/* Mitigation Policies Warning for L5 Medium/High */}
-                {shouldShowMitigationPolicies(incident.level, incident.scope) && (
-                  <Alert className="border-red-200 bg-red-50">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
-                    <AlertDescription className="text-red-800">
-                      <div className="space-y-2">
-                        <p>
-                          <strong>Critical Incident Alert:</strong> This incident requires immediate escalation and adherence to emergency mitigation policies.
-                        </p>
+                    {/* Second checkbox - shows for L5 Medium/High */}
+                    {shouldShowMitigationPolicies(incident.level, incident.scope) && (
+                      <div>
                         <label className="flex items-center space-x-2">
                           <Checkbox
                             checked={incident.mitigationPolicyAcknowledgment}
                             onCheckedChange={(checked) => updateIncident('mitigationPolicyAcknowledgment', checked)}
                           />
-                          <span className="text-sm">I acknowledge and will follow the emergency mitigation policies for this incident level</span>
+                          <AlertTriangle className={`h-4 w-4 ${
+                            incident.scope === 'High' ? 'text-red-600' : 'text-orange-600'
+                          }`} />
+                          <span className={`text-sm font-medium ${
+                            incident.scope === 'High' ? 'text-red-600' : 'text-orange-600'
+                          }`}>
+                            I acknowledge and will follow the emergency mitigation policies for this critical incident level
+                          </span>
                         </label>
-                        {errors.mitigationPolicyAcknowledgment && <p className="text-red-500 text-sm">{errors.mitigationPolicyAcknowledgment}</p>}
+                        {errors.mitigationPolicyAcknowledgment && <p className="text-red-500 text-sm ml-6">{errors.mitigationPolicyAcknowledgment}</p>}
                       </div>
-                    </AlertDescription>
-                  </Alert>
+                    )}
+                  </div>
                 )}
 
               </div>

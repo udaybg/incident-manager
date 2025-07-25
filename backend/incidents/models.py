@@ -53,12 +53,11 @@ class Incident(models.Model):
     # Optional Fields
     estimated_time_to_mitigation = models.CharField(max_length=20, blank=True, default='unknown')
     first_detected_in = models.CharField(max_length=50, blank=True, help_text="Where the incident was first detected")
-    impacted_assets = models.CharField(max_length=50, blank=True, help_text="Assets experiencing side effects")
-    impacted_areas = models.CharField(max_length=50, blank=True, help_text="Technical areas impacted")
+    impacted_assets = models.JSONField(default=list, help_text="List of assets experiencing side effects")
+    impacted_areas = models.JSONField(default=list, help_text="List of technical areas impacted")
     additional_subscribers = models.TextField(blank=True, help_text="Additional email subscribers")
     
-    # Related Documents
-    related_documents = models.JSONField(default=list, help_text="List of related document links")
+    # Related Documents are handled via the IncidentDocument model with ForeignKey relationship
     
     # Compliance and Safety
     safety_compliance_document_url = models.URLField(blank=True, help_text="URL for safety compliance documentation")
