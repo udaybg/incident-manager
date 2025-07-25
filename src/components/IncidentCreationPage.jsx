@@ -454,93 +454,85 @@ const IncidentCreationPage = () => {
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
                       <label className="block text-sm font-medium text-gray-700">
-                        Safety & Compliance
+                        Does this incident impact Safety & Compliance?
                       </label>
                       <Tooltip content={getTooltipContent('safetyCompliance')}>
                         <span className="text-gray-400 cursor-help">ⓘ</span>
                       </Tooltip>
                     </div>
-                    <Select value={incident.safetyCompliance} onValueChange={(value) => updateIncident('safetyCompliance', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select impact level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getOptionsForField('impactOptions').map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <ToggleButtons
+                      options={getOptionsForField('impactOptions')}
+                      value={incident.safetyCompliance}
+                      onChange={(value) => updateIncident('safetyCompliance', value)}
+                    />
+                    <div className="mt-2">
+                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
+                        Help me decide
+                      </a>
+                    </div>
                   </div>
 
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
                       <label className="block text-sm font-medium text-gray-700">
-                        Security & Privacy
+                        Does this incident impact Security & Privacy?
                       </label>
                       <Tooltip content={getTooltipContent('securityPrivacy')}>
                         <span className="text-gray-400 cursor-help">ⓘ</span>
                       </Tooltip>
                     </div>
-                    <Select value={incident.securityPrivacy} onValueChange={(value) => updateIncident('securityPrivacy', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select impact level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getOptionsForField('impactOptions').map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <ToggleButtons
+                      options={getOptionsForField('impactOptions')}
+                      value={incident.securityPrivacy}
+                      onChange={(value) => updateIncident('securityPrivacy', value)}
+                    />
+                    <div className="mt-2">
+                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
+                        Help me decide
+                      </a>
+                    </div>
                   </div>
 
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
                       <label className="block text-sm font-medium text-gray-700">
-                        Data Quality
+                        Does this incident impact data quality: data missing, incorrect, corrupted?
                       </label>
                       <Tooltip content={getTooltipContent('dataQuality')}>
                         <span className="text-gray-400 cursor-help">ⓘ</span>
                       </Tooltip>
                     </div>
-                    <Select value={incident.dataQuality} onValueChange={(value) => updateIncident('dataQuality', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select impact level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getOptionsForField('impactOptions').map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <ToggleButtons
+                      options={getOptionsForField('impactOptions')}
+                      value={incident.dataQuality}
+                      onChange={(value) => updateIncident('dataQuality', value)}
+                    />
+                    <div className="mt-2">
+                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
+                        Help me decide
+                      </a>
+                    </div>
                   </div>
 
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
                       <label className="block text-sm font-medium text-gray-700">
-                        PSD2 Impact Review
+                        Does this incident have PSD2 impact?
                       </label>
                       <Tooltip content={getTooltipContent('psd2Impact')}>
                         <span className="text-gray-400 cursor-help">ⓘ</span>
                       </Tooltip>
                     </div>
-                    <Select value={incident.psd2Impact} onValueChange={(value) => updateIncident('psd2Impact', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select impact level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getOptionsForField('impactOptions').map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <ToggleButtons
+                      options={getOptionsForField('impactOptions')}
+                      value={incident.psd2Impact}
+                      onChange={(value) => updateIncident('psd2Impact', value)}
+                    />
+                    <div className="mt-2">
+                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
+                        Help me decide
+                      </a>
+                    </div>
                   </div>
                 </div>
 
@@ -670,7 +662,34 @@ const IncidentCreationPage = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                {/* Retroactive Checkbox */}
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={incident.retroactive === 'Yes'}
+                    onCheckedChange={(checked) => updateIncident('retroactive', checked ? 'Yes' : 'No')}
+                  />
+                  <label className="text-sm font-medium text-gray-700">
+                    Retroactive
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-3 gap-6">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        All Form Times in
+                      </label>
+                    </div>
+                    <ToggleButtons
+                      options={[
+                        { value: 'Local Time', label: 'Local Time' },
+                        { value: 'UTC', label: 'UTC' }
+                      ]}
+                      value={incident.timeFormat}
+                      onChange={(value) => updateIncident('timeFormat', value)}
+                    />
+                  </div>
+
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
                       <label className="block text-sm font-medium text-gray-700">
@@ -680,18 +699,14 @@ const IncidentCreationPage = () => {
                         <span className="text-gray-400 cursor-help">ⓘ</span>
                       </Tooltip>
                     </div>
-                    <Select value={incident.detectionSource} onValueChange={(value) => updateIncident('detectionSource', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="How was this detected?" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getOptionsForField('detectionSources').map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <ToggleButtons
+                      options={[
+                        { value: 'Alert', label: 'Alert' },
+                        { value: 'Manual', label: 'Manual' }
+                      ]}
+                      value={incident.detectionSource}
+                      onChange={(value) => updateIncident('detectionSource', value)}
+                    />
                   </div>
 
                   <div>
