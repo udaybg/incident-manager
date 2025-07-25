@@ -381,6 +381,7 @@ const IncidentCreationPage = () => {
                       ]}
                       value={incident.level}
                       onChange={(value) => updateIncident('level', value)}
+                      incident={incident}
                     />
                     {!incident.level && (
                       <div className="mt-2 text-sm text-gray-600">Incident level is unknown</div>
@@ -402,21 +403,8 @@ const IncidentCreationPage = () => {
                       ]}
                       value={incident.scope}
                       onChange={(value) => updateIncident('scope', value)}
+                      incident={incident}
                     />
-                    {/* L5 Color Coding Context */}
-                    {(() => {
-                      const l5Styling = getL5ContextStyling(incident.level, incident.scope);
-                      return l5Styling ? (
-                        <div className="mt-2">
-                          <div className={l5Styling.titleClass}>
-                            {l5Styling.title}
-                          </div>
-                          <div className={l5Styling.descClass}>
-                            {l5Styling.description}
-                          </div>
-                        </div>
-                      ) : null;
-                    })()}
                   </div>
                 </div>
 
