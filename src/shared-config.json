@@ -193,29 +193,31 @@
       { "value": "", "label": "Enter email addresses..." }
     ],
     "tooltips": {
+      "title": "Short, one sentence description of the incident, ideally describing customer impact. Engineers, please write this so it makes sense to both engineers and ops teams.",
+      "description": "Describe what is known about the incident. Example: X is happening because of Y. Engineers, please include both technical and non-technical details for both engineers and ops teams.",
       "incidentCommander": "Email address for the engineer on point for communications during the incident. If blank, defaults to the creator of the incident.",
       "level": {
         "title": "Incident Level Guidelines",
         "sections": [
           {
             "level": "Level 2 (L2)",
-            "description": "Minor impact incidents",
-            "details": ["Limited user impact", "Non-critical system degradation", "Workarounds available"]
+            "description": "System and tooling activities with no user impact",
+            "details": ["An issue with systems or tools that do not affect internal (e.g. Uber employees, contractors) or external users (e.g. Riders, Partners, Eaters)", "Planned incidents, such as planned service maintenance, failover drills, and capacity safety drills", "Performance or system degradation", "System instability", "If this has an impact on safety and compliance, including external regulatory reporting, it is by definition a Level 4 or higher incident"]
           },
           {
             "level": "Level 3 (L3)", 
-            "description": "Moderate impact incidents",
-            "details": ["Noticeable user impact", "Service degradation", "Multiple users affected"]
+            "description": "Internal User Features Impacted",
+            "details": ["An issue that impacts internal users only", "team.uber.com is down", "Engineering tools are inaccurate or unavailable", "If this has an impact on safety and compliance, including external regulatory reporting, it is by definition a Level 4 or higher incident"]
           },
           {
             "level": "Level 4 (L4)",
-            "description": "High impact incidents", 
-            "details": ["Significant user impact", "Major service disruption", "Business functions affected"]
+            "description": "External User Features, Mitigation or Observability Impacted", 
+            "details": ["An issue that impacts external users but is not part of a Core Flow", "Delayed receipts or invoices", "Delayed user notifications", "An issue that impacts critical internal services required to mitigate (rollback or hotfix) a potential Level 5 incident: Up, Gitolite, Github, Flipr, Monorepos / SubmitQueue, Citrus", "An issue that impacts critical Observability services: Core metrics and tracing pipeline (M3, uMonitor, Grafana, Jaeger, etc.), External monitoring (Blackbox), Centralized logging (ELK, log ingestion, log-explorer, etc.)"]
           },
           {
             "level": "Level 5 (L5)",
-            "description": "Critical impact incidents",
-            "details": ["Severe user impact", "Complete service outage", "Revenue affecting", "Requires immediate attention"]
+            "description": "Brand and Revenue-Critical Features Impacted",
+            "details": ["An issue that impacts the essential features of our business or a Core Flow", "Customers or Partners are unable to take or give trips", "Customer or Partner signup or login is down", "Customer payment processing is down or significantly delayed", "Customer payment onboarding is down or significantly delayed", "Partner earnings are delayed", "Instant Pay is down", "Surge is down", "ETAs are down"]
           }
         ]
       },
