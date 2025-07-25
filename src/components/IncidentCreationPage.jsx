@@ -733,11 +733,18 @@ const IncidentCreationPage = () => {
                       </label>
                       <Tooltip content={getTooltipContent('reportingOrg')} />
                     </div>
-                    <Input
-                      value={incident.reportingOrg}
-                      onChange={(e) => updateIncident('reportingOrg', e.target.value)}
-                      placeholder="Organization or team name"
-                    />
+                    <Select value={incident.reportingOrg} onValueChange={(value) => updateIncident('reportingOrg', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select reporting organization" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getOptionsForField('reportingOrg').map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
