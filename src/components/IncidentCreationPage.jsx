@@ -500,11 +500,18 @@ const IncidentCreationPage = () => {
                       <Tooltip content={getTooltipContent('impactedParties')} />
                     </div>
                     <MultiSelect
-                      options={getOptionsForField('impactedParties')}
-                      value={incident.impactedParties}
-                      onChange={(value) => updateIncident('impactedParties', value)}
+                      values={incident.impactedParties}
+                      onValuesChange={(values) => updateIncident('impactedParties', values)}
                       placeholder="Select impacted parties"
-                    />
+                    >
+                      <SelectContent>
+                        {getOptionsForField('impactedParties').map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </MultiSelect>
                   </div>
 
                   <div>
@@ -515,11 +522,18 @@ const IncidentCreationPage = () => {
                       <Tooltip content={getTooltipContent('impactedLocations')} />
                     </div>
                     <MultiSelect
-                      options={getOptionsForField('impactedLocations')}
-                      value={incident.impactedLocations}
-                      onChange={(value) => updateIncident('impactedLocations', value)}
+                      values={incident.impactedLocations}
+                      onValuesChange={(values) => updateIncident('impactedLocations', values)}
                       placeholder="Select impacted locations"
-                    />
+                    >
+                      <SelectContent>
+                        {getOptionsForField('impactedLocations').map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </MultiSelect>
                   </div>
                 </div>
 
@@ -533,11 +547,18 @@ const IncidentCreationPage = () => {
                       <Tooltip content={getTooltipContent('impactedAreas')} />
                     </div>
                     <MultiSelect
-                      options={getOptionsForField('impactedAreas')}
-                      value={incident.impactedAreas}
-                      onChange={(value) => updateIncident('impactedAreas', value)}
+                      values={incident.impactedAreas}
+                      onValuesChange={(values) => updateIncident('impactedAreas', values)}
                       placeholder="Select impacted areas"
-                    />
+                    >
+                      <SelectContent>
+                        {getOptionsForField('impactedAreas').map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </MultiSelect>
                   </div>
 
                   <div>
@@ -548,11 +569,18 @@ const IncidentCreationPage = () => {
                       <Tooltip content={getTooltipContent('impactedAssets')} />
                     </div>
                     <MultiSelect
-                      options={getOptionsForField('impactedAssets')}
-                      value={incident.impactedAssets}
-                      onChange={(value) => updateIncident('impactedAssets', value)}
+                      values={incident.impactedAssets}
+                      onValuesChange={(values) => updateIncident('impactedAssets', values)}
                       placeholder="Select impacted assets"
-                    />
+                    >
+                      <SelectContent>
+                        {getOptionsForField('impactedAssets').map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </MultiSelect>
                   </div>
                 </div>
               </div>
