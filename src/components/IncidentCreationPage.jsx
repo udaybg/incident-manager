@@ -12,6 +12,7 @@ import {
   getIncidentTypeDefinition, getMessage, getCurrentTimestamp
 } from '../config/formConfig.js';
 import { getTooltipContent } from '../config/sharedConfig.js';
+import { getL5ContextStyling } from '../config/colorConfig.js';
 
 const IncidentCreationPage = () => {
   const navigate = useNavigate();
@@ -323,6 +324,45 @@ const IncidentCreationPage = () => {
                   />
                 </div>
 
+                {/* Contact Information */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Incident Commander
+                      </label>
+                      <Tooltip content={getTooltipContent('incidentCommander')} />
+                    </div>
+                    <Input
+                      type="email"
+                      value={incident.incidentCommander}
+                      onChange={(e) => updateIncident('incidentCommander', e.target.value)}
+                      placeholder="commander@company.com"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Reporting Organization
+                      </label>
+                      <Tooltip content={getTooltipContent('reportingOrg')} />
+                    </div>
+                    <Select value={incident.reportingOrg} onValueChange={(value) => updateIncident('reportingOrg', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select reporting organization" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getOptionsForField('reportingOrg').map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 {/* Level and Scope */}
                 <div className="grid grid-cols-2 gap-8">
                   <div>
@@ -363,6 +403,59 @@ const IncidentCreationPage = () => {
                       value={incident.scope}
                       onChange={(value) => updateIncident('scope', value)}
                     />
+                    {/* L5 Color Coding Context */}
+                    {(() => {
+                      const l5Styling = getL5ContextStyling(incident.level, incident.scope);
+                      return l5Styling ? (
+                        <div className="mt-2">
+                          <div className={l5Styling.titleClass}>
+                            {l5Styling.title}
+                          </div>
+                          <div className={l5Styling.descClass}>
+                            {l5Styling.description}
+                          </div>
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Incident Commander
+                      </label>
+                      <Tooltip content={getTooltipContent('incidentCommander')} />
+                    </div>
+                    <Input
+                      type="email"
+                      value={incident.incidentCommander}
+                      onChange={(e) => updateIncident('incidentCommander', e.target.value)}
+                      placeholder="commander@company.com"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Reporting Organization
+                      </label>
+                      <Tooltip content={getTooltipContent('reportingOrg')} />
+                    </div>
+                    <Select value={incident.reportingOrg} onValueChange={(value) => updateIncident('reportingOrg', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select reporting organization" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getOptionsForField('reportingOrg').map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -693,80 +786,7 @@ const IncidentCreationPage = () => {
             )}
           </div>
 
-          {/* Section 4: Contact Information */}
-          <div className="rounded-xl p-6 space-y-6 bg-white">
-            <button
-              type="button"
-              onClick={() => toggleSection('impact')}
-              className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${sectionVisibility.impact ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
-            >
-              <span>Contact Information</span>
-              {sectionVisibility.impact ? (
-                <ChevronUp className="h-5 w-5" />
-              ) : (
-                <ChevronDown className="h-5 w-5" />
-              )}
-            </button>
-
-            {sectionVisibility.impact && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Incident Commander
-                      </label>
-                      <Tooltip content={getTooltipContent('incidentCommander')} />
-                    </div>
-                    <Input
-                      type="email"
-                      value={incident.incidentCommander}
-                      onChange={(e) => updateIncident('incidentCommander', e.target.value)}
-                      placeholder="commander@company.com"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Reporting Organization
-                      </label>
-                      <Tooltip content={getTooltipContent('reportingOrg')} />
-                    </div>
-                    <Select value={incident.reportingOrg} onValueChange={(value) => updateIncident('reportingOrg', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select reporting organization" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getOptionsForField('reportingOrg').map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Additional Subscribers
-                    </label>
-                    <Tooltip content={getTooltipContent('additionalSubscribers')} />
-                  </div>
-                  <Textarea
-                    value={incident.additionalSubscribers}
-                    onChange={(e) => updateIncident('additionalSubscribers', e.target.value)}
-                    placeholder="Additional email addresses (comma-separated)"
-                    rows={2}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Section 5: Additional Information */}
+          {/* Section 4: Additional Information */}
           <div className="rounded-xl p-6 space-y-6 bg-white">
             <button
               type="button"
@@ -783,6 +803,22 @@ const IncidentCreationPage = () => {
 
             {sectionVisibility.additional && (
               <div className="space-y-6">
+                {/* Additional Subscribers */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Additional Subscribers
+                    </label>
+                    <Tooltip content={getTooltipContent('additionalSubscribers')} />
+                  </div>
+                  <Textarea
+                    value={incident.additionalSubscribers}
+                    onChange={(e) => updateIncident('additionalSubscribers', e.target.value)}
+                    placeholder="Additional email addresses (comma-separated)"
+                    rows={2}
+                  />
+                </div>
+
                 {/* Related Documents */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -797,7 +833,7 @@ const IncidentCreationPage = () => {
                       onClick={addDocument}
                       variant="outline" 
                       size="sm"
-                      className="text-xs"
+                      className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                     >
                       Add Document
                     </Button>
@@ -805,17 +841,17 @@ const IncidentCreationPage = () => {
                   
                   <div className="space-y-3">
                     {incident.relatedDocuments.map((doc, index) => (
-                      <div key={index} className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
+                      <div key={index} className="flex items-center space-x-2 p-3 border border-gray-200 rounded-xl">
                         <div className="flex-1 grid grid-cols-2 gap-3">
                           <Input
-                            placeholder="Document URL"
-                            value={doc.url}
-                            onChange={(e) => updateDocument(index, 'url', e.target.value)}
-                          />
-                          <Input
-                            placeholder="Description"
+                            placeholder="Title"
                             value={doc.description}
                             onChange={(e) => updateDocument(index, 'description', e.target.value)}
+                          />
+                          <Input
+                            placeholder="URL"
+                            value={doc.url}
+                            onChange={(e) => updateDocument(index, 'url', e.target.value)}
                           />
                         </div>
                         <Button

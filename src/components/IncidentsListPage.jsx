@@ -6,6 +6,10 @@ import {
 } from './ui/index.js';
 import { Search, Plus, Menu, Filter, RefreshCw, Calendar, Users, AlertTriangle, Edit } from 'lucide-react';
 import { getOptionsForField } from '../config/formConfig.js';
+import { 
+  getIncidentBorderColor, getLevelBackgroundColor, getScopeBorderColor,
+  getStatusBadgeStyle, getIncidentTypeBadgeStyle 
+} from '../config/colorConfig.js';
 
 // Hamburger Menu Icon Component
 const HamburgerIcon = ({ className }) => (
@@ -104,85 +108,7 @@ const IncidentsListPage = () => {
     fetchIncidents();
   }, [search, filters]);
 
-  // Get incident priority color for left border (combination-based)
-  const getIncidentBorderColor = (level, scope) => {
-    if (level === 'L5' && scope === 'High') return 'border-l-red-500';     // L5 High - red border
-    if (level === 'L5' && scope === 'Medium') return 'border-l-orange-500'; // L5 Medium - orange border
-    return 'border-l-black';     // Everything else - black border
-  };
 
-  // Get level badge styling
-  const getLevelBadgeStyle = (level, scope) => {
-    if (level === 'L5') {
-      if (scope === 'High') return 'bg-red-600 text-white';
-      if (scope === 'Medium') return 'bg-orange-500 text-white';
-      return 'bg-yellow-500 text-white';
-    }
-    if (level === 'L4') return 'bg-orange-400 text-white';
-    if (level === 'L3') return 'bg-yellow-400 text-white';
-    return 'bg-gray-400 text-white';
-  };
-
-  // Get level part background color for merged badge
-  const getLevelBackgroundColor = (level, scope) => {
-    if (level === 'L5') {
-      if (scope === 'High') return 'bg-red-600';
-      if (scope === 'Medium') return 'bg-orange-500';
-      return 'bg-black'; // L5 Low
-    }
-    // L2, L3, L4 all scopes are black
-    return 'bg-black';
-  };
-
-  // Get status badge styling (workflow-based)
-  const getStatusBadgeStyle = (status) => {
-    switch (status) {
-      case 'reported':
-        return 'bg-red-100 text-red-800';      // Urgent - needs immediate attention
-      case 'mitigating':
-        return 'bg-orange-100 text-orange-800';   // Active - work in progress
-      case 'resolved':
-      case 'postmortem':
-        return 'bg-yellow-100 text-yellow-800';   // Complete - awaiting closure
-      case 'closed':
-        return 'bg-green-100 text-green-800';    // Success - fully resolved
-      default:
-        return 'bg-gray-100 text-gray-700';     // Unknown state
-    }
-  };
-
-  // Get incident type badge styling (nature-based)
-  const getIncidentTypeBadgeStyle = (incidentType) => {
-    switch (incidentType) {
-      case 'Planned':
-        return 'bg-blue-100 text-blue-800';     // Scheduled - calm blue
-      case 'Outage':
-        return 'bg-purple-100 text-purple-800'; // Unplanned - urgent purple
-      case 'External':
-        return 'bg-teal-100 text-teal-800';     // Third-party - neutral teal
-      case 'Test':
-        return 'bg-pink-100 text-pink-800';     // Test data - distinct pink
-      default:
-        return 'bg-gray-100 text-gray-700';     // Unknown - gray
-    }
-  };
-
-  // Get scope badge styling (severity-based)
-  const getScopeBadgeStyle = (scope) => {
-    switch (scope) {
-      case 'High': return 'bg-white text-black border-2 border-red-500';     // Critical impact
-      case 'Medium': return 'bg-white text-black border-2 border-orange-500'; // Moderate impact
-      case 'Low': return 'bg-white text-black border-2 border-yellow-500';    // Minor impact
-      default: return 'bg-white text-black border-2 border-gray-400';     // Unknown impact
-    }
-  };
-
-  // Get border color for level-scope badge (combination-based)
-  const getScopeBorderColor = (level, scope) => {
-    if (level === 'L5' && scope === 'High') return 'border-red-500';     // L5 High - red border
-    if (level === 'L5' && scope === 'Medium') return 'border-orange-500'; // L5 Medium - orange border
-    return 'border-black';     // Everything else - black border
-  };
 
   // Format date for display
   const formatDate = (dateString) => {
