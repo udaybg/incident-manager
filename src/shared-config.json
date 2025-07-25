@@ -225,19 +225,19 @@
         "title": "Incident Scope Guidelines",
         "sections": [
           {
-            "level": "Low Scope",
-            "description": "Limited geographical or functional impact",
-            "details": ["Single region affected", "Specific service component", "Limited user subset", "Minimal business impact"]
+            "level": "Low",
+            "description": "Affects at least one entire city or <20% of consumers.",
+            "details": []
           },
           {
-            "level": "Medium Scope",
-            "description": "Moderate geographical or functional impact", 
-            "details": ["Multiple regions affected", "Core service functionality", "Significant user base", "Notable business impact"]
+            "level": "Medium",
+            "description": "Affects at least one city in the top 10% of cities by trip volume or >=20% of consumers.", 
+            "details": []
           },
           {
-            "level": "High Scope",
-            "description": "Wide geographical or functional impact",
-            "details": ["Global or multi-regional", "Critical business functions", "Large user population", "Major business impact"]
+            "level": "High",
+            "description": "Affects at least one entire datacenter or 50%+ of consumers.",
+            "details": []
           }
         ]
       },
