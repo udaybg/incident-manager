@@ -277,7 +277,7 @@ const IncidentCreationPage = () => {
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      Incident Title *
+                      Incident Title
                     </label>
                     <Tooltip content={getTooltipContent('title')} />
                   </div>
@@ -294,7 +294,7 @@ const IncidentCreationPage = () => {
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      Description *
+                      Description
                     </label>
                     <Tooltip content={getTooltipContent('description')} />
                   </div>
@@ -363,28 +363,8 @@ const IncidentCreationPage = () => {
                       value={incident.scope}
                       onChange={(value) => updateIncident('scope', value)}
                     />
-                    {incident.scope && (
-                      <div className="mt-2">
-                        <div className="text-sm font-medium text-gray-900">{incident.scope}</div>
-                        <div className="text-sm text-gray-600">
-                          {incident.scope === 'High' && 'Affects at least one entire datacenter or 50%+ of consumers.'}
-                          {incident.scope === 'Medium' && 'Affects multiple services or significant portion of users.'}
-                          {incident.scope === 'Low' && 'Affects a single service or small number of users.'}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
-
-                {/* Help Link */}
-                <div className="text-sm text-gray-600">
-                  Read more about incident levels and scopes in the{' '}
-                  <a href="#" className="text-blue-600 underline hover:text-blue-800">
-                    incident classification article
-                  </a>
-                </div>
-
-
 
                 {/* L5 Warning */}
                 {shouldShowL5Warning(incident.level, incident.scope) && (
@@ -463,11 +443,6 @@ const IncidentCreationPage = () => {
                       value={incident.safetyCompliance}
                       onChange={(value) => updateIncident('safetyCompliance', value)}
                     />
-                    <div className="mt-2">
-                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
-                        Help me decide
-                      </a>
-                    </div>
                   </div>
 
                   <div>
@@ -482,11 +457,6 @@ const IncidentCreationPage = () => {
                       value={incident.securityPrivacy}
                       onChange={(value) => updateIncident('securityPrivacy', value)}
                     />
-                    <div className="mt-2">
-                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
-                        Help me decide
-                      </a>
-                    </div>
                   </div>
 
                   <div>
@@ -501,11 +471,6 @@ const IncidentCreationPage = () => {
                       value={incident.dataQuality}
                       onChange={(value) => updateIncident('dataQuality', value)}
                     />
-                    <div className="mt-2">
-                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
-                        Help me decide
-                      </a>
-                    </div>
                   </div>
 
                   <div>
@@ -520,11 +485,6 @@ const IncidentCreationPage = () => {
                       value={incident.psd2Impact}
                       onChange={(value) => updateIncident('psd2Impact', value)}
                     />
-                    <div className="mt-2">
-                      <a href="#" className="text-sm text-blue-600 underline hover:text-blue-800">
-                        Help me decide
-                      </a>
-                    </div>
                   </div>
                 </div>
 
@@ -535,7 +495,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Parties
                       </label>
-                                          <Tooltip content={getTooltipContent('impactedParties')} />
+                      <Tooltip content={getTooltipContent('impactedParties')} />
                     </div>
                     <MultiSelect
                       options={getOptionsForField('impactedParties')}
@@ -550,7 +510,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Locations
                       </label>
-                                          <Tooltip content={getTooltipContent('impactedLocations')} />
+                      <Tooltip content={getTooltipContent('impactedLocations')} />
                     </div>
                     <MultiSelect
                       options={getOptionsForField('impactedLocations')}
@@ -568,12 +528,13 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Areas
                       </label>
-                                          <Tooltip content={getTooltipContent('impactedAreas')} />
+                      <Tooltip content={getTooltipContent('impactedAreas')} />
                     </div>
-                    <Input
+                    <MultiSelect
+                      options={getOptionsForField('impactedAreas')}
                       value={incident.impactedAreas}
-                      onChange={(e) => updateIncident('impactedAreas', e.target.value)}
-                      placeholder="Describe impacted business areas"
+                      onChange={(value) => updateIncident('impactedAreas', value)}
+                      placeholder="Select impacted areas"
                     />
                   </div>
 
@@ -582,12 +543,13 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Assets
                       </label>
-                                          <Tooltip content={getTooltipContent('impactedAssets')} />
+                      <Tooltip content={getTooltipContent('impactedAssets')} />
                     </div>
-                    <Input
+                    <MultiSelect
+                      options={getOptionsForField('impactedAssets')}
                       value={incident.impactedAssets}
-                      onChange={(e) => updateIncident('impactedAssets', e.target.value)}
-                      placeholder="List affected systems or assets"
+                      onChange={(value) => updateIncident('impactedAssets', value)}
+                      placeholder="Select impacted assets"
                     />
                   </div>
                 </div>
@@ -618,7 +580,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Incident Started At
                       </label>
-                                          <Tooltip content={getTooltipContent('startedAt')} />
+                      <Tooltip content={getTooltipContent('startedAt')} />
                     </div>
                     <Input
                       type="datetime-local"
@@ -632,7 +594,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Incident Detected At
                       </label>
-                                          <Tooltip content={getTooltipContent('incidentDetectedAt')} />
+                      <Tooltip content={getTooltipContent('incidentDetectedAt')} />
                     </div>
                     <Input
                       type="datetime-local"
@@ -640,17 +602,6 @@ const IncidentCreationPage = () => {
                       onChange={(e) => updateIncident('incidentDetectedAt', e.target.value)}
                     />
                   </div>
-                </div>
-
-                {/* Retroactive Checkbox */}
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    checked={incident.retroactive === 'Yes'}
-                    onCheckedChange={(checked) => updateIncident('retroactive', checked ? 'Yes' : 'No')}
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Retroactive
-                  </label>
                 </div>
 
                 <div className="grid grid-cols-3 gap-6">
@@ -735,7 +686,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Incident Commander
                       </label>
-                                          <Tooltip content={getTooltipContent('incidentCommander')} />
+                      <Tooltip content={getTooltipContent('incidentCommander')} />
                     </div>
                     <Input
                       type="email"
@@ -750,7 +701,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Reporting Organization
                       </label>
-                                          <Tooltip content={getTooltipContent('reportingOrg')} />
+                      <Tooltip content={getTooltipContent('reportingOrg')} />
                     </div>
                     <Input
                       value={incident.reportingOrg}

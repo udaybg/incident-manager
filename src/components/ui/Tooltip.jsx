@@ -25,6 +25,12 @@ const Tooltip = ({ content, children, className = "" }) => {
         top = triggerRect.top - tooltipRect.height - 8; // 8px gap above trigger
       }
 
+      // Check if tooltip would go off the top of the screen
+      if (top < 20) {
+        placement = 'bottom';
+        top = triggerRect.bottom + 8; // Force it below
+      }
+
       // Check if tooltip would go off the right side of the screen
       if (left + tooltipRect.width > viewport.width - 20) {
         left = viewport.width - tooltipRect.width - 20;
