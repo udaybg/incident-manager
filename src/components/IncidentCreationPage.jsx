@@ -279,9 +279,7 @@ const IncidentCreationPage = () => {
                     <label className="block text-sm font-medium text-gray-700">
                       Incident Title *
                     </label>
-                    <Tooltip content={getTooltipContent('title')}>
-                      <span className="text-gray-400 cursor-help">ⓘ</span>
-                    </Tooltip>
+                    <Tooltip content={getTooltipContent('title')} />
                   </div>
                   <Input
                     value={incident.title}
@@ -298,9 +296,7 @@ const IncidentCreationPage = () => {
                     <label className="block text-sm font-medium text-gray-700">
                       Description *
                     </label>
-                    <Tooltip content={getTooltipContent('description')}>
-                      <span className="text-gray-400 cursor-help">ⓘ</span>
-                    </Tooltip>
+                    <Tooltip content={getTooltipContent('description')} />
                   </div>
                   <Textarea
                     value={incident.description}
@@ -318,9 +314,7 @@ const IncidentCreationPage = () => {
                     <label className="block text-sm font-medium text-gray-700">
                       Incident Type
                     </label>
-                    <Tooltip content={getIncidentTypeDefinition(incident.incidentType)}>
-                      <span className="text-gray-400 cursor-help">ⓘ</span>
-                    </Tooltip>
+                    <Tooltip content={getIncidentTypeDefinition(incident.incidentType)} />
                   </div>
                   <ToggleButtons
                     options={getOptionsForField('incidentTypes')}
@@ -332,9 +326,12 @@ const IncidentCreationPage = () => {
                 {/* Level and Scope */}
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-3">
-                      Level
-                    </label>
+                    <div className="flex items-center space-x-2 mb-3">
+                      <label className="block text-sm font-medium text-gray-900">
+                        Level
+                      </label>
+                      <Tooltip content={getTooltipContent('level')} />
+                    </div>
                     <ToggleButtons
                       options={[
                         { value: 'L2', label: 'L2' },
@@ -351,9 +348,12 @@ const IncidentCreationPage = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-3">
-                      Scope
-                    </label>
+                    <div className="flex items-center space-x-2 mb-3">
+                      <label className="block text-sm font-medium text-gray-900">
+                        Scope
+                      </label>
+                      <Tooltip content={getTooltipContent('scope')} />
+                    </div>
                     <ToggleButtons
                       options={[
                         { value: 'Low', label: 'LOW' },
@@ -456,9 +456,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Does this incident impact Safety & Compliance?
                       </label>
-                      <Tooltip content={getTooltipContent('safetyCompliance')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('safetyCompliance')} />
                     </div>
                     <ToggleButtons
                       options={getOptionsForField('impactOptions')}
@@ -477,9 +475,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Does this incident impact Security & Privacy?
                       </label>
-                      <Tooltip content={getTooltipContent('securityPrivacy')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('securityPrivacy')} />
                     </div>
                     <ToggleButtons
                       options={getOptionsForField('impactOptions')}
@@ -498,9 +494,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Does this incident impact data quality: data missing, incorrect, corrupted?
                       </label>
-                      <Tooltip content={getTooltipContent('dataQuality')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('dataQuality')} />
                     </div>
                     <ToggleButtons
                       options={getOptionsForField('impactOptions')}
@@ -519,9 +513,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Does this incident have PSD2 impact?
                       </label>
-                      <Tooltip content={getTooltipContent('psd2Impact')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('psd2Impact')} />
                     </div>
                     <ToggleButtons
                       options={getOptionsForField('impactOptions')}
@@ -543,9 +535,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Parties
                       </label>
-                      <Tooltip content={getTooltipContent('impactedParties')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('impactedParties')} />
                     </div>
                     <MultiSelect
                       options={getOptionsForField('impactedParties')}
@@ -560,9 +550,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Locations
                       </label>
-                      <Tooltip content={getTooltipContent('impactedLocations')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('impactedLocations')} />
                     </div>
                     <MultiSelect
                       options={getOptionsForField('impactedLocations')}
@@ -580,9 +568,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Areas
                       </label>
-                      <Tooltip content={getTooltipContent('impactedAreas')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('impactedAreas')} />
                     </div>
                     <Input
                       value={incident.impactedAreas}
@@ -596,9 +582,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Impacted Assets
                       </label>
-                      <Tooltip content={getTooltipContent('impactedAssets')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('impactedAssets')} />
                     </div>
                     <Input
                       value={incident.impactedAssets}
@@ -634,9 +618,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Incident Started At
                       </label>
-                      <Tooltip content={getTooltipContent('startedAt')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('startedAt')} />
                     </div>
                     <Input
                       type="datetime-local"
@@ -650,9 +632,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Incident Detected At
                       </label>
-                      <Tooltip content={getTooltipContent('incidentDetectedAt')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('incidentDetectedAt')} />
                     </div>
                     <Input
                       type="datetime-local"
@@ -695,9 +675,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Detection Source
                       </label>
-                      <Tooltip content={getTooltipContent('detectionSource')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('detectionSource')} />
                     </div>
                     <ToggleButtons
                       options={[
@@ -714,9 +692,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Estimated Time to Mitigation
                       </label>
-                      <Tooltip content={getTooltipContent('estimatedTimeToMitigation')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('estimatedTimeToMitigation')} />
                     </div>
                     <Select value={incident.estimatedTimeToMitigation} onValueChange={(value) => updateIncident('estimatedTimeToMitigation', value)}>
                       <SelectTrigger>
@@ -759,9 +735,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Incident Commander
                       </label>
-                      <Tooltip content={getTooltipContent('incidentCommander')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('incidentCommander')} />
                     </div>
                     <Input
                       type="email"
@@ -776,9 +750,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Reporting Organization
                       </label>
-                      <Tooltip content={getTooltipContent('reportingOrg')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                                          <Tooltip content={getTooltipContent('reportingOrg')} />
                     </div>
                     <Input
                       value={incident.reportingOrg}
@@ -793,9 +765,7 @@ const IncidentCreationPage = () => {
                     <label className="block text-sm font-medium text-gray-700">
                       Additional Subscribers
                     </label>
-                    <Tooltip content={getTooltipContent('additionalSubscribers')}>
-                      <span className="text-gray-400 cursor-help">ⓘ</span>
-                    </Tooltip>
+                    <Tooltip content={getTooltipContent('additionalSubscribers')} />
                   </div>
                   <Textarea
                     value={incident.additionalSubscribers}
@@ -832,9 +802,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Related Documents
                       </label>
-                      <Tooltip content={getTooltipContent('relatedDocuments')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('relatedDocuments')} />
                     </div>
                     <Button 
                       type="button" 
@@ -883,9 +851,7 @@ const IncidentCreationPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Safety & Compliance Impact Document URL
                       </label>
-                      <Tooltip content={getTooltipContent('scImpactDocumentUrl')}>
-                        <span className="text-gray-400 cursor-help">ⓘ</span>
-                      </Tooltip>
+                      <Tooltip content={getTooltipContent('scImpactDocumentUrl')} />
                     </div>
                     <Input
                       value={incident.scImpactDocumentUrl}

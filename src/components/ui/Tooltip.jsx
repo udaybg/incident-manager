@@ -107,7 +107,7 @@ const Tooltip = ({ content, children, className = "" }) => {
       >
         {children}
         <span
-          className="text-gray-400 hover:text-gray-600 cursor-help ml-2"
+          className="text-gray-400 hover:text-gray-600 cursor-help"
           onMouseEnter={() => setIsVisible(true)}
           onMouseLeave={() => setIsVisible(false)}
         >
