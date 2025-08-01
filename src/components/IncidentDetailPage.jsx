@@ -960,8 +960,8 @@ const IncidentDetailPage = () => {
                  </div>
                )}
 
-               {/* Inline Updates - Show when resolved is clicked */}
-               {showInlineUpdates && updates.length > 0 && (
+               {/* Updates Display - Always visible during mitigating, togglable during resolved+ */}
+               {(incident.status === 'mitigating' || showInlineUpdates) && updates.length > 0 && (
                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Incident Updates</h3>
                    <div className="space-y-3">

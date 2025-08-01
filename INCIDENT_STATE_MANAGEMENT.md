@@ -37,7 +37,7 @@ reported → mitigating → resolved → postmortem → closed
   - "Mark as duplicate" (always available)
 - ✅ **Available Elements**:
   - **Post an Update section** (text box + post button) - **ONLY visible in this state**
-  - Updates timeline (shows all posted updates)
+  - **Updates display** (always visible to show posted updates)
 - 📍 **Status Bar**: Shows "Mitigating" as active (green)
 
 #### Actions:
@@ -162,9 +162,9 @@ const buttonTexts = {
   <PostUpdateSection />
 )}
 
-// Inline updates display - only when resolved status is clicked
-{showInlineUpdates && updates.length > 0 && (
-  <InlineUpdatesSection />
+// Updates display - always visible during mitigating, togglable during resolved+
+{(incident.status === 'mitigating' || showInlineUpdates) && updates.length > 0 && (
+  <UpdatesSection />
 )}
 
 // Postmortem form - only during postmortem
@@ -247,11 +247,11 @@ All fields are required before "Complete Postmortem" works:
 
 ### UI Element Testing:
 - [ ] Post updates only visible during mitigating
-- [ ] Inline updates only visible when resolved status is clicked  
+- [ ] Updates display always visible during mitigating state
+- [ ] Updates display toggles correctly when resolved status is clicked (resolved+ states)
 - [ ] Postmortem form only visible during postmortem  
 - [ ] Status hyperlinks work correctly
 - [ ] Modals display correct data for mitigating/closed states
-- [ ] Inline updates toggle correctly for resolved state
 - [ ] Mark as duplicate always available
 
 ### Validation Testing:
@@ -262,4 +262,4 @@ All fields are required before "Complete Postmortem" works:
 ---
 
 *Last Updated: 2024-01-15*  
-*Version: 1.1* 
+*Version: 1.2* 
