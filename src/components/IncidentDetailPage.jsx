@@ -198,7 +198,7 @@ const IncidentDetailPage = () => {
     const getStatusLink = (statusKey) => {
       // Add hyperlinks based on status and current state
       if (statusKey === 'resolved' && currentIndex >= 2) {
-        return () => setShowInlineUpdates(!showInlineUpdates);
+        return () => setShowInlineUpdates(prev => !prev);
       }
       if (statusKey === 'mitigating' && currentIndex >= 3) {
         return () => setShowUpdatesModal(true);
