@@ -803,28 +803,22 @@ const IncidentDetailPage = () => {
 
                   {detailSectionVisibility.basicInfo && (
                     <div className="space-y-4">
-                      {/* Title */}
+                      {/* Incident Type */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Title</label>
-                        <div className="text-lg font-semibold text-gray-900">{incident.title}</div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Type</label>
+                        <div className="text-gray-900">{incident.incidentType?.toUpperCase() || 'PLANNED'}</div>
                       </div>
 
-                      {/* Description */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                        <div className="text-gray-700 p-3 bg-gray-50 rounded-lg">{incident.description}</div>
-                      </div>
-
-                      {/* Commander */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Commander</label>
-                        <div className="text-gray-900">{incident.incident_commander || 'Not assigned'}</div>
-                      </div>
-
-                      {/* Reporting Organization */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Organization</label>
-                        <div className="text-gray-900">{incident.reportingOrg || incident.reporting_org || 'Not specified'}</div>
+                      {/* Contact Information Grid */}
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Incident Commander</label>
+                          <div className="text-gray-900">{incident.incident_commander || 'Not assigned'}</div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Organization</label>
+                          <div className="text-gray-900">{incident.reportingOrg || incident.reporting_org || 'Not specified'}</div>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -847,24 +841,6 @@ const IncidentDetailPage = () => {
 
                   {detailSectionVisibility.classification && (
                     <div className="space-y-4">
-                      {/* Level & Scope */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Level & Scope</label>
-                        <div className="flex items-center">
-                          <span className={`${getLevelBackgroundColor(incident.level, incident.scope)} text-white px-3 py-2 rounded-l text-sm font-medium border-2 border-r-0 ${getScopeBorderColor(incident.level, incident.scope)}`}>
-                            {incident.level}
-                          </span>
-                          <span className={`bg-white text-black px-3 py-2 rounded-r text-sm font-medium border-2 border-l-0 ${getScopeBorderColor(incident.level, incident.scope)}`}>
-                            {incident.scope.toUpperCase()}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Incident Type */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Type</label>
-                        <div className="text-gray-900">{incident.incidentType?.toUpperCase() || 'PLANNED'}</div>
-                      </div>
 
                       {/* Impacted Areas */}
                       <div>
