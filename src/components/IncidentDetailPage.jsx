@@ -56,7 +56,7 @@ const IncidentDetailPage = () => {
   });
   const [showUpdatesModal, setShowUpdatesModal] = useState(false);
   const [showPostmortemModal, setShowPostmortemModal] = useState(false);
-  const [showInlineUpdates, setShowInlineUpdates] = useState(false);
+
   const [sidePanelWidth, setSidePanelWidth] = useState(384); // 24rem in pixels
   const [isResizing, setIsResizing] = useState(false);
     const [showCompletedPostmortem, setShowCompletedPostmortem] = useState(false);
@@ -421,8 +421,7 @@ const IncidentDetailPage = () => {
     if (incident.status === 'postmortem') {
       const validation = validatePostmortemData();
       if (!validation.isValid) {
-        // Close resolution side panel so user can see the postmortem form
-        setShowInlineUpdates(false);
+
         alert(`Please fill in all required postmortem fields:\n\n${validation.missingFields.join('\n')}`);
         return;
       }
@@ -784,27 +783,7 @@ const IncidentDetailPage = () => {
 
               {/* Secondary Action Buttons - Second Row */}
               <div className="flex items-center space-x-2 mt-3">
-                {/* Show resolution button - available from resolved state onwards */}
-                {['resolved', 'postmortem', 'closed'].includes(incident.status) && (
-                  <button 
-                    onClick={() => {
-                      setShowInlineUpdates(prev => !prev);
-                    }}
-                    className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                    style={{
-                      backgroundColor: showInlineUpdates ? '#059669' : '#000000',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      padding: '8px 16px'
-                    }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#047857' : '#374151'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#059669' : '#000000'}
-                  >
-                    <span>📝</span>
-                    <span>{showInlineUpdates ? 'Hide Resolution' : 'Show Resolution'}</span>
-                  </button>
-                )}
+
 
                 {/* Show postmortem button - available only in closed state */}
                 {incident.status === 'closed' && (
@@ -2313,8 +2292,7 @@ const IncidentDetailPage = () => {
         </div>
       </div>
 
-      {/* Resolution Side Panel */}
-      {showInlineUpdates && (
+
         <div 
           className="fixed right-0 z-40 bg-white shadow-xl transform transition-transform duration-300 ease-in-out"
           style={{ 
