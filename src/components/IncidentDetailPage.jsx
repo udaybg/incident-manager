@@ -1870,35 +1870,7 @@ const IncidentDetailPage = () => {
 
                
 
-               {/* Updates Display - Only visible during mitigating (inline) */}
-               {incident.status === 'mitigating' && updates.length > 0 && (
-                 <div className="mt-4">
-                   <h3 className="text-sm font-semibold text-gray-900 mb-3">Incident Updates</h3>
-                   <div className="space-y-3">
-                     {updates.map((update) => (
-                       <div key={update.id} className="flex items-start space-x-2">
-                         {/* Timeline icon */}
-                         <div className="flex-shrink-0 w-4 h-4 bg-gray-400 rounded-full flex items-center justify-center mt-1">
-                           <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                         </div>
-                         
-                         {/* Update content */}
-                         <div className="flex-1 min-w-0">
-                           <div className="flex items-center space-x-1 text-xs text-gray-600 mb-1">
-                             <span>{formatDateTime(update.created_at).split(' (')[0]}</span>
-                             <span>by</span>
-                             <span className="font-medium text-blue-600 underline">{update.author}</span>
-                             <span>:</span>
-                           </div>
-                           <div className="py-1">
-                             <p className="text-gray-900 text-xs">{update.content}</p>
-                           </div>
-                         </div>
-                       </div>
-                     ))}
-                   </div>
-                 </div>
-               )}
+               
             </div>
 
             {/* Right Sidebar (1/4 width) - Hidden since we have collapsible sections */}
