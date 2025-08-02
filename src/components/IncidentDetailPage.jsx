@@ -611,11 +611,10 @@ const IncidentDetailPage = () => {
           
 
 
-          {/* Main Layout: Left content and Right sidebar */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Main Content - Full Width */}
+          <div className="max-w-5xl mx-auto">
             
-            {/* Left Content (3/4 width) */}
-            <div className="lg:col-span-3 space-y-2">
+            <div className="space-y-2">
               
                              {/* Main Incident Card */}
                <Card className="bg-white border border-gray-200">
@@ -1365,8 +1364,8 @@ const IncidentDetailPage = () => {
                )}
             </div>
 
-            {/* Right Sidebar (1/4 width) */}
-            <div className="lg:col-span-1">
+            {/* Right Sidebar (1/4 width) - Hidden since we have collapsible sections */}
+            <div className="hidden">
               <Card className="bg-white border border-gray-200 sticky top-6">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
