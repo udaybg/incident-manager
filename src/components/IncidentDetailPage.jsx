@@ -698,91 +698,114 @@ const IncidentDetailPage = () => {
                 </CardContent>
               </Card>
 
-                             {/* Action Buttons */}
-               <div className="flex items-center space-x-2">
-                 {incident.status !== 'closed' && (
-                   <button 
-                     onClick={handleStatusUpdate}
-                     disabled={isUpdatingStatus}
-                     className="flex items-center space-x-2 text-sm rounded-lg text-white disabled:opacity-50 font-medium"
-                     style={{
-                       backgroundColor: '#000000',
-                       border: 'none',
-                       borderRadius: '8px',
-                       fontSize: '14px',
-                       padding: '8px 16px'
-                     }}
-                     onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#374151')}
-                     onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#000000')}
-                   >
-                     <span>▶</span>
-                     <span>{getButtonText(incident.status)}</span>
-                   </button>
-                 )}
-                 <button 
-                   onClick={() => {
-                     // TODO: Implement mark as duplicate functionality
-                     alert('Mark as duplicate functionality to be implemented');
-                   }}
-                   className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                   style={{
-                     backgroundColor: '#000000',
-                     border: 'none',
-                     borderRadius: '8px',
-                     fontSize: '14px',
-                     padding: '8px 16px'
-                   }}
-                   onMouseEnter={(e) => e.target.style.backgroundColor = '#374151'}
-                   onMouseLeave={(e) => e.target.style.backgroundColor = '#000000'}
-                 >
-                   <span>📋</span>
-                   <span>Mark as duplicate</span>
-                 </button>
-                 
-                 {/* Show resolution button - available from resolved state onwards */}
-                 {['resolved', 'postmortem', 'closed'].includes(incident.status) && (
-                   <button 
-                     onClick={() => {
-                       setShowInlineUpdates(prev => !prev);
-                     }}
-                     className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                     style={{
-                       backgroundColor: showInlineUpdates ? '#059669' : '#000000',
-                       border: 'none',
-                       borderRadius: '8px',
-                       fontSize: '14px',
-                       padding: '8px 16px'
-                     }}
-                     onMouseEnter={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#047857' : '#374151'}
-                     onMouseLeave={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#059669' : '#000000'}
-                   >
-                     <span>📝</span>
-                     <span>{showInlineUpdates ? 'Hide Resolution' : 'Show Resolution'}</span>
-                   </button>
-                 )}
+                                                          {/* Action Buttons */}
+              <div className="flex items-center justify-between">
+                {/* Left: Incident Details Button */}
+                <button 
+                  className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                  style={{
+                    backgroundColor: '#1f2937',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    padding: '8px 16px'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#374151'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#1f2937'}
+                >
+                  <span>📋</span>
+                  <span>Incident Details</span>
+                </button>
 
-                 {/* Show postmortem button - available only in closed state */}
-                 {incident.status === 'closed' && (
-                   <button 
-                     onClick={() => {
-                       setShowCompletedPostmortem(prev => !prev);
-                     }}
-                     className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                     style={{
-                       backgroundColor: showCompletedPostmortem ? '#7c3aed' : '#000000',
-                       border: 'none',
-                       borderRadius: '8px',
-                       fontSize: '14px',
-                       padding: '8px 16px'
-                     }}
-                     onMouseEnter={(e) => e.target.style.backgroundColor = showCompletedPostmortem ? '#6d28d9' : '#374151'}
-                     onMouseLeave={(e) => e.target.style.backgroundColor = showCompletedPostmortem ? '#7c3aed' : '#000000'}
-                   >
-                     <span>📋</span>
-                     <span>{showCompletedPostmortem ? 'Hide Postmortem' : 'Show Postmortem'}</span>
-                   </button>
-                                 )}
+                {/* Center: Mark as Duplicate Button */}
+                <button 
+                  onClick={() => {
+                    // TODO: Implement mark as duplicate functionality
+                    alert('Mark as duplicate functionality to be implemented');
+                  }}
+                  className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                  style={{
+                    backgroundColor: '#6b7280',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    padding: '8px 16px'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#4b5563'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#6b7280'}
+                >
+                  <span>🔄</span>
+                  <span>Mark as duplicate</span>
+                </button>
+
+                {/* Right: Primary Action Button */}
+                {incident.status !== 'closed' && (
+                  <button 
+                    onClick={handleStatusUpdate}
+                    disabled={isUpdatingStatus}
+                    className="flex items-center space-x-2 text-sm rounded-lg text-white disabled:opacity-50 font-medium"
+                    style={{
+                      backgroundColor: '#000000',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      padding: '8px 16px'
+                    }}
+                    onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#374151')}
+                    onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#000000')}
+                  >
+                    <span>▶</span>
+                    <span>{getButtonText(incident.status)}</span>
+                  </button>
+                )}
                                </div>
+
+              {/* Secondary Action Buttons - Second Row */}
+              <div className="flex items-center space-x-2 mt-3">
+                {/* Show resolution button - available from resolved state onwards */}
+                {['resolved', 'postmortem', 'closed'].includes(incident.status) && (
+                  <button 
+                    onClick={() => {
+                      setShowInlineUpdates(prev => !prev);
+                    }}
+                    className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                    style={{
+                      backgroundColor: showInlineUpdates ? '#059669' : '#000000',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      padding: '8px 16px'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#047857' : '#374151'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#059669' : '#000000'}
+                  >
+                    <span>📝</span>
+                    <span>{showInlineUpdates ? 'Hide Resolution' : 'Show Resolution'}</span>
+                  </button>
+                )}
+
+                {/* Show postmortem button - available only in closed state */}
+                {incident.status === 'closed' && (
+                  <button 
+                    onClick={() => {
+                      setShowCompletedPostmortem(prev => !prev);
+                    }}
+                    className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                    style={{
+                      backgroundColor: showCompletedPostmortem ? '#7c3aed' : '#000000',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      padding: '8px 16px'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = showCompletedPostmortem ? '#6d28d9' : '#374151'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = showCompletedPostmortem ? '#7c3aed' : '#000000'}
+                  >
+                    <span>📋</span>
+                    <span>{showCompletedPostmortem ? 'Hide Postmortem' : 'Show Postmortem'}</span>
+                  </button>
+                )}
+              </div>
 
               {/* Incident Details - Collapsible Sections */}
               <div className="mt-6 space-y-4">
