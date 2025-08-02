@@ -939,27 +939,29 @@ const IncidentDetailPage = () => {
                       <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
                         <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Mitigation Updates</h3>
                         
-                        {/* Post Update Text Box */}
-                        <div className="space-y-2">
-                          <Textarea
-                            value={newUpdate}
-                            onChange={(e) => setNewUpdate(e.target.value)}
-                            className="w-full"
-                            rows="3"
-                            placeholder="Post an update about this incident..."
-                          />
-                          <div className="flex justify-end">
-                            <button
-                              onClick={handlePostUpdate}
-                              disabled={isPostingUpdate || !newUpdate.trim()}
-                              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {isPostingUpdate && <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>}
-                              <Send className="h-4 w-4" />
-                              <span>{isPostingUpdate ? 'Posting...' : 'Post Update'}</span>
-                            </button>
+                        {/* Post Update Text Box - Only show in mitigating state */}
+                        {incident.status === 'mitigating' && (
+                          <div className="space-y-2">
+                            <Textarea
+                              value={newUpdate}
+                              onChange={(e) => setNewUpdate(e.target.value)}
+                              className="w-full"
+                              rows="3"
+                              placeholder="Post an update about this incident..."
+                            />
+                            <div className="flex justify-end">
+                              <button
+                                onClick={handlePostUpdate}
+                                disabled={isPostingUpdate || !newUpdate.trim()}
+                                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {isPostingUpdate && <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>}
+                                <Send className="h-4 w-4" />
+                                <span>{isPostingUpdate ? 'Posting...' : 'Post Update'}</span>
+                              </button>
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         {/* Saved Posts Timeline */}
                         {updates.length > 0 && (
