@@ -57,8 +57,7 @@ const IncidentDetailPage = () => {
   const [showUpdatesModal, setShowUpdatesModal] = useState(false);
   const [showPostmortemModal, setShowPostmortemModal] = useState(false);
 
-  const [sidePanelWidth, setSidePanelWidth] = useState(384); // 24rem in pixels
-  const [isResizing, setIsResizing] = useState(false);
+
     const [showCompletedPostmortem, setShowCompletedPostmortem] = useState(false);
   
   // Master state for incident details pages with state-based defaults
@@ -90,43 +89,7 @@ const IncidentDetailPage = () => {
     }));
   };
 
-  // Handle side panel resizing
-  const handleResizeStart = (e) => {
-    setIsResizing(true);
-    e.preventDefault();
-  };
 
-  const handleResizeMove = (e) => {
-    if (!isResizing) return;
-    
-    const newWidth = window.innerWidth - e.clientX;
-    const minWidth = 300;
-    const maxWidth = Math.min(800, window.innerWidth * 0.6);
-    
-    if (newWidth >= minWidth && newWidth <= maxWidth) {
-      setSidePanelWidth(newWidth);
-    }
-  };
-
-  const handleResizeEnd = () => {
-    setIsResizing(false);
-  };
-
-  useEffect(() => {
-    if (isResizing) {
-      document.addEventListener('mousemove', handleResizeMove);
-      document.addEventListener('mouseup', handleResizeEnd);
-      document.body.style.cursor = 'ew-resize';
-      document.body.style.userSelect = 'none';
-      
-      return () => {
-        document.removeEventListener('mousemove', handleResizeMove);
-        document.removeEventListener('mouseup', handleResizeEnd);
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-      };
-    }
-  }, [isResizing]);
 
   useEffect(() => {
     const fetchIncident = async () => {
@@ -2293,72 +2256,9 @@ const IncidentDetailPage = () => {
       </div>
 
 
-        <div 
-          className="fixed right-0 z-40 bg-white shadow-xl transform transition-transform duration-300 ease-in-out"
-          style={{ 
-            top: '64px', 
-            bottom: '0', 
-            width: `${sidePanelWidth}px` 
-          }}
-        >
-          {/* Resize handle */}
-          <div
-            className="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 hover:bg-blue-500 cursor-ew-resize transition-colors"
-            onMouseDown={handleResizeStart}
-            title="Drag to resize panel"
-          />
-          
-          <div className="flex flex-col h-full ml-1">
-            {/* Side panel header */}
-            <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-              <h2 className="text-lg font-semibold text-gray-900">Resolution Updates</h2>
-              <button
-                onClick={() => setShowInlineUpdates(false)}
-                className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                title="Close resolution panel"
-              >
-                <span className="text-xl text-gray-600">×</span>
-              </button>
-            </div>
-            
-            {/* Side panel content */}
-            <div className="flex-1 overflow-y-auto p-4">
-              {updates.length > 0 ? (
-                <div className="space-y-4">
-                  {updates.map((update) => (
-                    <div key={update.id} className="pb-4 border-b border-gray-100 last:border-b-0">
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-                        <span className="font-medium text-blue-600">{update.author}</span>
-                        <span>•</span>
-                        <span>{formatDateTime(update.created_at)}</span>
-                      </div>
-                      <p className="text-gray-900 text-sm leading-relaxed">{update.content}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No resolution updates have been posted for this incident.</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Backdrop for side panel */}
-      {showInlineUpdates && (
-        <div 
-          className="fixed bg-black bg-opacity-25 z-30"
-          style={{ 
-            top: '64px', 
-            left: '0', 
-            right: '0', 
-            bottom: '0' 
-          }}
-          onClick={() => setShowInlineUpdates(false)}
-        />
-      )}
+
+
 
       {/* Updates Modal */}
       {showUpdatesModal && (
