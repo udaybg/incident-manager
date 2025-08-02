@@ -59,9 +59,12 @@ const IncidentDetailPage = () => {
   const [showInlineUpdates, setShowInlineUpdates] = useState(false);
   const [sidePanelWidth, setSidePanelWidth] = useState(384); // 24rem in pixels
   const [isResizing, setIsResizing] = useState(false);
-  const [showCompletedPostmortem, setShowCompletedPostmortem] = useState(false);
+    const [showCompletedPostmortem, setShowCompletedPostmortem] = useState(false);
   
-  // Section visibility states for collapsible incident details (all expanded by default as per UX)
+  // Master state for incident details pages
+  const [activeDetailsPage, setActiveDetailsPage] = useState(null); // null | 'incident' | 'mitigation' | 'postmortem'
+
+  // Section visibility states for collapsible incident details
   const [detailSectionVisibility, setDetailSectionVisibility] = useState({
     basicInfo: true,
     classification: true, 
@@ -698,44 +701,71 @@ const IncidentDetailPage = () => {
                 </CardContent>
               </Card>
 
-                                                          {/* Action Buttons */}
-                            {incident.status === 'mitigating' ? (
-                /* Mitigating State: 3-button layout */
-                <div className="flex items-center justify-between">
-                  {/* Left: Incident Details Button - Gray */}
+              {/* Incident Details Master Page - Action Buttons */}
+              <div className="flex items-center justify-between">
+                {/* Left side: Details navigation buttons */}
+                <div className="flex items-center space-x-2">
                   <button 
-                    className="flex items-center space-x-2 text-sm rounded-lg text-gray-700 font-medium border border-gray-300"
+                    onClick={() => setActiveDetailsPage(activeDetailsPage === 'incident' ? null : 'incident')}
+                    className={`flex items-center space-x-2 text-sm rounded-lg font-medium ${
+                      activeDetailsPage === 'incident' 
+                        ? 'text-white border-none' 
+                        : 'text-gray-700 border border-gray-300'
+                    }`}
                     style={{
-                      backgroundColor: '#f9fafb',
+                      backgroundColor: activeDetailsPage === 'incident' ? '#000000' : '#f9fafb',
                       borderRadius: '8px',
                       fontSize: '14px',
                       padding: '8px 16px'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#f9fafb'}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = activeDetailsPage === 'incident' ? '#374151' : '#f3f4f6'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = activeDetailsPage === 'incident' ? '#000000' : '#f9fafb'}
                   >
                     <span>📋</span>
                     <span>Incident Details</span>
                   </button>
 
-                  {/* Center: Mitigation Details Button - Blue */}
-                  <button 
-                    className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                    style={{
-                      backgroundColor: '#2563eb',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      padding: '8px 16px'
-                    }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
-                  >
-                    <span style={{backgroundColor: 'transparent', color: 'white'}}>🔍</span>
-                    <span style={{backgroundColor: 'transparent', color: 'white'}}>Mitigation Details</span>
-                  </button>
+                  {incident.status === 'mitigating' && (
+                    <button 
+                      onClick={() => setActiveDetailsPage(activeDetailsPage === 'mitigation' ? null : 'mitigation')}
+                      className={`flex items-center space-x-2 text-sm rounded-lg text-white font-medium`}
+                      style={{
+                        backgroundColor: activeDetailsPage === 'mitigation' ? '#1d4ed8' : '#2563eb',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        padding: '8px 16px'
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = activeDetailsPage === 'mitigation' ? '#1d4ed8' : '#2563eb'}
+                    >
+                      <span style={{backgroundColor: 'transparent', color: 'white'}}>🔍</span>
+                      <span style={{backgroundColor: 'transparent', color: 'white'}}>Mitigation Details</span>
+                    </button>
+                  )}
 
-                  {/* Right: Mark Resolved Button - Black */}
+                  {['postmortem', 'closed'].includes(incident.status) && (
+                    <button 
+                      onClick={() => setActiveDetailsPage(activeDetailsPage === 'postmortem' ? null : 'postmortem')}
+                      className={`flex items-center space-x-2 text-sm rounded-lg text-white font-medium`}
+                      style={{
+                        backgroundColor: activeDetailsPage === 'postmortem' ? '#6d28d9' : '#7c3aed',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        padding: '8px 16px'
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#6d28d9'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = activeDetailsPage === 'postmortem' ? '#6d28d9' : '#7c3aed'}
+                    >
+                      <span style={{backgroundColor: 'transparent', color: 'white'}}>📄</span>
+                      <span style={{backgroundColor: 'transparent', color: 'white'}}>Postmortem Details</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Right side: Primary action button */}
+                {incident.status !== 'closed' && (
                   <button 
                     onClick={handleStatusUpdate}
                     disabled={isUpdatingStatus}
@@ -750,52 +780,11 @@ const IncidentDetailPage = () => {
                     onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#374151')}
                     onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#000000')}
                   >
-                    <span style={{backgroundColor: 'transparent', color: 'white'}}>✓</span>
+                    <span style={{backgroundColor: 'transparent', color: 'white'}}>▶</span>
                     <span style={{backgroundColor: 'transparent', color: 'white'}}>{getButtonText(incident.status)}</span>
                   </button>
-                </div>
-              ) : (
-                /* Other States: 2-button layout (preserving original for "reported" etc.) */
-                <div className="flex items-center justify-between">
-                  {/* Left: Incident Details Button - Black */}
-                  <button 
-                    className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                    style={{
-                      backgroundColor: '#000000',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      padding: '8px 16px'
-                    }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#374151'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#000000'}
-                  >
-                    <span style={{backgroundColor: 'transparent', color: 'white'}}>📋</span>
-                    <span style={{backgroundColor: 'transparent', color: 'white'}}>Incident Details</span>
-                  </button>
-
-                  {/* Right: Primary Action Button - Blue */}
-                  {incident.status !== 'closed' && (
-                    <button 
-                      onClick={handleStatusUpdate}
-                      disabled={isUpdatingStatus}
-                      className="flex items-center space-x-2 text-sm rounded-lg text-white disabled:opacity-50 font-medium"
-                      style={{
-                        backgroundColor: '#2563eb',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        padding: '8px 16px'
-                      }}
-                      onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#1d4ed8')}
-                      onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#2563eb')}
-                    >
-                      <span style={{backgroundColor: 'transparent', color: 'white'}}>▶</span>
-                      <span style={{backgroundColor: 'transparent', color: 'white'}}>{getButtonText(incident.status)}</span>
-                    </button>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
 
               {/* Secondary Action Buttons - Second Row */}
               <div className="flex items-center space-x-2 mt-3">
@@ -844,6 +833,151 @@ const IncidentDetailPage = () => {
                 )}
               </div>
 
+              {/* Incident Details Master Page - State Pages */}
+              {activeDetailsPage && (
+                <div className="mt-6">
+                  {/* Page 1: Incident Details Created Details Page */}
+                  {activeDetailsPage === 'incident' && (
+                    <div className="space-y-4">
+                      {/* Basic Information Section */}
+                      <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                        <button
+                          type="button"
+                          onClick={() => toggleDetailSection('basicInfo')}
+                          className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.basicInfo ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                        >
+                          <span>Basic Information</span>
+                          {detailSectionVisibility.basicInfo ? (
+                            <ChevronUp className="h-5 w-5" />
+                          ) : (
+                            <ChevronDown className="h-5 w-5" />
+                          )}
+                        </button>
+                        {detailSectionVisibility.basicInfo && (
+                          <div className="space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Incident Type</label>
+                              <div className="text-gray-900">{incident.incidentType?.toUpperCase() || 'PLANNED'}</div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-6">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Incident Commander</label>
+                                <div className="text-gray-900">{incident.incident_commander || 'Not assigned'}</div>
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Organization</label>
+                                <div className="text-gray-900">{incident.reportingOrg || incident.reporting_org || 'Not specified'}</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Timeline Information Section */}
+                      <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                        <button
+                          type="button"
+                          onClick={() => toggleDetailSection('timeline')}
+                          className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.timeline ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                        >
+                          <span>Timeline Information</span>
+                          {detailSectionVisibility.timeline ? (
+                            <ChevronUp className="h-5 w-5" />
+                          ) : (
+                            <ChevronDown className="h-5 w-5" />
+                          )}
+                        </button>
+                        {detailSectionVisibility.timeline && (
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-6">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Incident Started At</label>
+                                <div className="text-gray-900">{formatDateTime(incident.started_at)}</div>
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Incident Detected At</label>
+                                <div className="text-gray-900">{formatDateTime(incident.detected_at)}</div>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-6">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Time to Detection (TTD)</label>
+                                <div className="text-gray-900">{calculateTTD(incident.started_at, incident.detected_at)}</div>
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Detection Source</label>
+                                <div className="text-gray-900">{incident.detectionSource || incident.detection_source || 'Manual'}</div>
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Last Updated</label>
+                                <div className="text-gray-900">{formatDateTime(incident.updatedAt || incident.updated_at)}</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Page 2: Incident Details Mitigation Page */}
+                  {activeDetailsPage === 'mitigation' && (
+                    <div className="space-y-4">
+                      <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                        <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Mitigation Updates</h3>
+                        
+                        {/* Post Update Text Box */}
+                        <div className="space-y-2">
+                          <Textarea
+                            value={newUpdate}
+                            onChange={(e) => setNewUpdate(e.target.value)}
+                            className="w-full"
+                            rows="3"
+                            placeholder="Post an update about this incident..."
+                          />
+                          <div className="flex justify-end">
+                            <button
+                              onClick={handlePostUpdate}
+                              disabled={isPostingUpdate || !newUpdate.trim()}
+                              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {isPostingUpdate && <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>}
+                              <Send className="h-4 w-4" />
+                              <span>{isPostingUpdate ? 'Posting...' : 'Post Update'}</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Saved Posts Timeline */}
+                        {updates.length > 0 && (
+                          <div className="space-y-3 mt-6">
+                            <h4 className="font-medium text-gray-900">Update History</h4>
+                            {updates.map((update, index) => (
+                              <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+                                <div className="text-sm text-gray-600 mb-1">
+                                  <span className="font-medium">{update.timestamp}</span> by <span className="text-blue-600">{update.author}</span>
+                                </div>
+                                <div className="text-gray-900">{update.content}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Page 3: Incident Details Postmortem Page */}
+                  {activeDetailsPage === 'postmortem' && (
+                    <div className="space-y-4">
+                      <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                        <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Postmortem Analysis</h3>
+                        <div className="text-gray-600">Complete postmortem form will be displayed here...</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* OLD SECTIONS - TO BE CLEANED UP BELOW */}
               {/* Incident Details - Collapsible Sections */}
               <div className="mt-6 space-y-4">
                 {/* Section 1: Basic Information */}
