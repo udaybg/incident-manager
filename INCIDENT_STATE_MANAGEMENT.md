@@ -110,12 +110,10 @@ reported → mitigating → resolved → postmortem → closed
   - **Completed postmortem display** (read-only view below action buttons, **shown by default**)
 - 📍 **Status Bar**: 
   - Shows "Closed" as active (green)
-  - **"Closed" is clickable** → Opens modal to view completed postmortem
 
 #### Actions:
 - **Click "Show Resolution"** → Opens side panel displaying all posted updates from mitigation phase
 - **Click "Show Postmortem"** → Toggles display of completed postmortem analysis below action buttons
-- **Click "Closed" in status bar** → Opens postmortem modal
 
 #### Default Behavior:
 - **Show Postmortem is active by default** when incident loads in closed state
@@ -142,7 +140,7 @@ reported → mitigating → resolved → postmortem → closed
 ### Status Bar Hyperlinks
 | Current State | Clickable Status | Action |
 |---------------|------------------|---------|
-| `closed` | "Closed" | View postmortem modal |
+| None | N/A | No status hyperlinks available |
 
 ---
 
@@ -213,9 +211,7 @@ const buttonTexts = {
 ### Hyperlink Logic
 ```javascript
 const getStatusLink = (statusKey) => {
-  if (statusKey === 'closed' && currentIndex >= 4) {
-    return () => setShowPostmortemModal(true);
-  }
+  // No status hyperlinks available
   return null;
 };
 ```
@@ -234,7 +230,7 @@ const getStatusLink = (statusKey) => {
 
 ### Information Access:
 - **During/After Resolution**: Click "Show Resolution" button to open side panel with all mitigation updates
-- **After Closure**: Click "Closed" in status bar to view postmortem analysis in modal
+- **After Closure**: Click "Show Postmortem" button to view completed postmortem analysis below action buttons
 
 ### Resolution Side Panel Features:
 - **Positioning**: Starts below main header (64px from top) to avoid overlay
@@ -295,7 +291,7 @@ All fields are required before "Complete Postmortem" works:
 - [ ] Completed postmortem is shown by default when incident loads in closed state
 - [ ] Resolution side panel works independently of postmortem displays
 - [ ] Complete Postmortem validation automatically closes resolution side panel on error
-- [ ] Status hyperlinks work correctly (only "Closed" has hyperlink)
+- [ ] Status bar has no hyperlinks (all status labels are non-clickable)
 - [ ] Modals display correct data for closed state
 - [ ] Mark as duplicate always available in all states
 
@@ -307,4 +303,4 @@ All fields are required before "Complete Postmortem" works:
 ---
 
 *Last Updated: 2024-01-15*  
-*Version: 4.0* 
+*Version: 4.1* 
