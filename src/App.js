@@ -2,9 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import IncidentCreationPage from './components/IncidentCreationPage';
 import IncidentsListPage from './components/IncidentsListPage';
-import IncidentDetailsPage from './components/IncidentDetailsPage';
-import MitigationDetailsPage from './components/MitigationDetailsPage';
-import PostmortemDetailsPage from './components/PostmortemDetailsPage';
+import IncidentDetailPage from './components/IncidentDetailPage';
 import './App.css';
 
 // Navigation component that uses React Router
@@ -19,6 +17,8 @@ function Navigation() {
   const handleNavigateToList = () => {
     navigate('/incidents');
   };
+
+
 
   const isListPage = location.pathname === '/' || location.pathname === '/incidents';
 
@@ -68,18 +68,9 @@ function Navigation() {
           path="/create-incident" 
           element={<IncidentCreationPage />} 
         />
-        {/* New separate incident detail pages */}
         <Route 
-          path="/incidents/:id" 
-          element={<IncidentDetailsPage />} 
-        />
-        <Route 
-          path="/incidents/:id/mitigation" 
-          element={<MitigationDetailsPage />} 
-        />
-        <Route 
-          path="/incidents/:id/postmortem" 
-          element={<PostmortemDetailsPage />} 
+          path="/incident/:id" 
+          element={<IncidentDetailPage />} 
         />
       </Routes>
     </div>
