@@ -693,19 +693,17 @@ const IncidentDetailPage = () => {
                     <span>Incident Details</span>
                   </button>
 
-                  {['mitigating', 'resolved'].includes(incident.status) && (
-                    <button 
-                      onClick={() => setActiveDetailsPage('mitigation')}
-                      className={`flex items-center space-x-2 text-sm font-medium px-4 py-2 border-b-2 transition-colors ${
-                        activeDetailsPage === 'mitigation' 
-                          ? 'border-blue-600 text-blue-600 bg-blue-50' 
-                          : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-                      }`}
-                    >
-                      <span>🔍</span>
-                      <span>Mitigation Details</span>
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => setActiveDetailsPage('mitigation')}
+                    className={`flex items-center space-x-2 text-sm font-medium px-4 py-2 border-b-2 transition-colors ${
+                      activeDetailsPage === 'mitigation' 
+                        ? 'border-blue-600 text-blue-600 bg-blue-50' 
+                        : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span>🔍</span>
+                    <span>Mitigation Details</span>
+                  </button>
 
                   {['postmortem', 'closed'].includes(incident.status) && (
                     <button 
