@@ -1005,7 +1005,7 @@ const IncidentDetailPage = () => {
                       <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
                         
                         {/* Content based on incident status */}
-                        {incident.status === 'mitigating' ? (
+                        {incident.status === 'mitigating' && (
                           /* Active mitigation - show text box */
                           <div className="space-y-2">
                             <Textarea
@@ -1019,19 +1019,16 @@ const IncidentDetailPage = () => {
                               <button
                                 onClick={handlePostUpdate}
                                 disabled={isPostingUpdate || !newUpdate.trim()}
-                                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex items-center justify-center p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                title={isPostingUpdate ? 'Posting...' : 'Post Update'}
                               >
-                                {isPostingUpdate && <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>}
-                                <Send className="h-4 w-4" />
-                                <span>{isPostingUpdate ? 'Posting...' : 'Post Update'}</span>
+                                {isPostingUpdate ? (
+                                  <div className="w-4 h-4 border border-white border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                  <Send className="h-4 w-4" />
+                                )}
                               </button>
                             </div>
-                          </div>
-                        ) : (
-                          /* Resolved state - show completion message */
-                          <div className="text-center py-8">
-                            <div className="text-gray-600 mb-2">✅ Mitigation Phase Completed</div>
-                            <div className="text-sm text-gray-500">All mitigation updates have been posted.</div>
                           </div>
                         )}
 
