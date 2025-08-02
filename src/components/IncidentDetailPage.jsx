@@ -57,6 +57,47 @@ const IncidentDetailPage = () => {
   const [showUpdatesModal, setShowUpdatesModal] = useState(false);
   const [showPostmortemModal, setShowPostmortemModal] = useState(false);
   const [showInlineUpdates, setShowInlineUpdates] = useState(false);
+  const [sidePanelWidth, setSidePanelWidth] = useState(384); // 24rem in pixels
+  const [isResizing, setIsResizing] = useState(false);
+  const [showCompletedPostmortem, setShowCompletedPostmortem] = useState(false);
+
+  // Handle side panel resizing
+  const handleResizeStart = (e) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  const handleResizeMove = (e) => {
+    if (!isResizing) return;
+    
+    const newWidth = window.innerWidth - e.clientX;
+    const minWidth = 300;
+    const maxWidth = Math.min(800, window.innerWidth * 0.6);
+    
+    if (newWidth >= minWidth && newWidth <= maxWidth) {
+      setSidePanelWidth(newWidth);
+    }
+  };
+
+  const handleResizeEnd = () => {
+    setIsResizing(false);
+  };
+
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleResizeMove);
+      document.addEventListener('mouseup', handleResizeEnd);
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      
+      return () => {
+        document.removeEventListener('mousemove', handleResizeMove);
+        document.removeEventListener('mouseup', handleResizeEnd);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+    }
+  }, [isResizing]);
 
   useEffect(() => {
     const fetchIncident = async () => {
@@ -82,6 +123,11 @@ const IncidentDetailPage = () => {
               resolvedAt: incidentData.updated_at || '' // Use updated_at as default resolved time
             }));
             setIsPostmortemMode(true);
+          }
+
+          // If incident is closed, show completed postmortem by default
+          if (incidentData.status === 'closed') {
+            setShowCompletedPostmortem(true);
           }
         } else if (response.status === 404) {
           setError('Incident not found');
@@ -197,12 +243,6 @@ const IncidentDetailPage = () => {
 
     const getStatusLink = (statusKey) => {
       // Add hyperlinks based on status and current state
-      if (statusKey === 'resolved' && currentIndex >= 2) {
-        return () => setShowInlineUpdates(prev => !prev);
-      }
-      if (statusKey === 'mitigating' && currentIndex >= 3) {
-        return () => setShowUpdatesModal(true);
-      }
       if (statusKey === 'closed' && currentIndex >= 4) {
         return () => setShowPostmortemModal(true);
       }
@@ -349,6 +389,8 @@ const IncidentDetailPage = () => {
     if (incident.status === 'postmortem') {
       const validation = validatePostmortemData();
       if (!validation.isValid) {
+        // Close resolution side panel so user can see the postmortem form
+        setShowInlineUpdates(false);
         alert(`Please fill in all required postmortem fields:\n\n${validation.missingFields.join('\n')}`);
         return;
       }
@@ -682,7 +724,122 @@ const IncidentDetailPage = () => {
                    <span>📋</span>
                    <span>Mark as duplicate</span>
                  </button>
-               </div>
+                 
+                 {/* Show resolution button - available from resolved state onwards */}
+                 {['resolved', 'postmortem', 'closed'].includes(incident.status) && (
+                   <button 
+                     onClick={() => {
+                       setShowInlineUpdates(prev => !prev);
+                     }}
+                     className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                     style={{
+                       backgroundColor: showInlineUpdates ? '#059669' : '#000000',
+                       border: 'none',
+                       borderRadius: '8px',
+                       fontSize: '14px',
+                       padding: '8px 16px'
+                     }}
+                     onMouseEnter={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#047857' : '#374151'}
+                     onMouseLeave={(e) => e.target.style.backgroundColor = showInlineUpdates ? '#059669' : '#000000'}
+                   >
+                     <span>📝</span>
+                     <span>{showInlineUpdates ? 'Hide Resolution' : 'Show Resolution'}</span>
+                   </button>
+                 )}
+
+                 {/* Show postmortem button - available only in closed state */}
+                 {incident.status === 'closed' && (
+                   <button 
+                     onClick={() => {
+                       setShowCompletedPostmortem(prev => !prev);
+                     }}
+                     className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                     style={{
+                       backgroundColor: showCompletedPostmortem ? '#7c3aed' : '#000000',
+                       border: 'none',
+                       borderRadius: '8px',
+                       fontSize: '14px',
+                       padding: '8px 16px'
+                     }}
+                     onMouseEnter={(e) => e.target.style.backgroundColor = showCompletedPostmortem ? '#6d28d9' : '#374151'}
+                     onMouseLeave={(e) => e.target.style.backgroundColor = showCompletedPostmortem ? '#7c3aed' : '#000000'}
+                   >
+                     <span>📋</span>
+                     <span>{showCompletedPostmortem ? 'Hide Postmortem' : 'Show Postmortem'}</span>
+                   </button>
+                 )}
+                                </div>
+
+               {/* Completed Postmortem Display - Read-only view in closed state */}
+               {showCompletedPostmortem && incident.status === 'closed' && (
+                 <div className="mt-6 space-y-4">
+                   {/* Section 1: Postmortem Owners */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Postmortem Owners</h3>
+                     <div className="grid grid-cols-2 gap-4 text-sm">
+                       <div><strong>Author:</strong> {postmortemData.author || 'Not specified'}</div>
+                       <div><strong>Contributors:</strong> {postmortemData.contributors || 'Not specified'}</div>
+                       <div><strong>Organisation:</strong> {postmortemData.organisation || 'Not specified'}</div>
+                       <div><strong>Accountable Team:</strong> {postmortemData.accountableTeam || 'Not specified'}</div>
+                       <div><strong>Reviewers:</strong> {postmortemData.reviewers || 'Not specified'}</div>
+                       <div><strong>Bar Raiser:</strong> {postmortemData.barRaiser || 'Not specified'}</div>
+                     </div>
+                   </div>
+
+                   {/* Section 2: Incident Summary */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Incident Summary</h3>
+                     <div className="space-y-3 text-sm">
+                       <div>
+                         <strong>Executive Summary:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.executiveSummary || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Detailed Summary:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.detailedSummary || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Key Learnings:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.keyLearnings || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Mitigation Notes:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.mitigationNotes || 'Not provided'}</p>
+                       </div>
+                     </div>
+                   </div>
+
+                   {/* Section 3: Incident Timestamps */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Incident Timestamps</h3>
+                     <div className="grid grid-cols-2 gap-4 text-sm">
+                       <div><strong>Started At:</strong> {formatDateTime(postmortemData.startedAt) || 'Not specified'}</div>
+                       <div><strong>Detected At:</strong> {formatDateTime(postmortemData.detectedAt) || 'Not specified'}</div>
+                       <div><strong>Mitigated At:</strong> {formatDateTime(postmortemData.mitigatedAt) || 'Not specified'}</div>
+                       <div><strong>Resolved At:</strong> {formatDateTime(postmortemData.resolvedAt) || 'Not specified'}</div>
+                     </div>
+                   </div>
+
+                   {/* Section 4: Impact Assessment */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Impact Assessment</h3>
+                     <div className="space-y-3 text-sm">
+                       <div>
+                         <strong>Business Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.businessImpact || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Customer Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.customerImpact || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Stakeholder Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.stakeholderImpact || 'Not provided'}</p>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               )}
 
                {/* Postmortem Section */}
                {isPostmortemMode && (
@@ -960,9 +1117,9 @@ const IncidentDetailPage = () => {
                  </div>
                )}
 
-               {/* Updates Display - Always visible during mitigating, togglable during resolved+ */}
-               {(incident.status === 'mitigating' || showInlineUpdates) && updates.length > 0 && (
-                 <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+               {/* Updates Display - Only visible during mitigating (inline) */}
+               {incident.status === 'mitigating' && updates.length > 0 && (
+                 <div className="mt-4">
                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Incident Updates</h3>
                    <div className="space-y-3">
                      {updates.map((update) => (
@@ -1419,6 +1576,75 @@ const IncidentDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Resolution Side Panel */}
+      {showInlineUpdates && (
+        <div 
+          className="fixed right-0 z-40 bg-white shadow-xl transform transition-transform duration-300 ease-in-out"
+          style={{ 
+            top: '64px', 
+            bottom: '0', 
+            width: `${sidePanelWidth}px` 
+          }}
+        >
+          {/* Resize handle */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 hover:bg-blue-500 cursor-ew-resize transition-colors"
+            onMouseDown={handleResizeStart}
+            title="Drag to resize panel"
+          />
+          
+          <div className="flex flex-col h-full ml-1">
+            {/* Side panel header */}
+            <div className="flex items-center justify-between p-4 border-b bg-gray-50">
+              <h2 className="text-lg font-semibold text-gray-900">Resolution Updates</h2>
+              <button
+                onClick={() => setShowInlineUpdates(false)}
+                className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                title="Close resolution panel"
+              >
+                <span className="text-xl text-gray-600">×</span>
+              </button>
+            </div>
+            
+            {/* Side panel content */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {updates.length > 0 ? (
+                <div className="space-y-4">
+                  {updates.map((update) => (
+                    <div key={update.id} className="pb-4 border-b border-gray-100 last:border-b-0">
+                      <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                        <span className="font-medium text-blue-600">{update.author}</span>
+                        <span>•</span>
+                        <span>{formatDateTime(update.created_at)}</span>
+                      </div>
+                      <p className="text-gray-900 text-sm leading-relaxed">{update.content}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>No resolution updates have been posted for this incident.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Backdrop for side panel */}
+      {showInlineUpdates && (
+        <div 
+          className="fixed bg-black bg-opacity-25 z-30"
+          style={{ 
+            top: '64px', 
+            left: '0', 
+            right: '0', 
+            bottom: '0' 
+          }}
+          onClick={() => setShowInlineUpdates(false)}
+        />
+      )}
 
       {/* Updates Modal */}
       {showUpdatesModal && (

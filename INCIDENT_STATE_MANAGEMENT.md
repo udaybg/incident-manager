@@ -21,6 +21,8 @@ reported → mitigating → resolved → postmortem → closed
   - "Mark as duplicate" (always available)
 - ❌ **Hidden Elements**:
   - Post an Update section (text box + post button)
+  - Show Resolution button
+  - Show Postmortem button
 - 📍 **Status Bar**: Shows "Reported" as active (green)
 
 #### Actions:
@@ -33,16 +35,19 @@ reported → mitigating → resolved → postmortem → closed
 
 #### UI Elements:
 - ✅ **Buttons Available**: 
-  - "Mark Resolved" (primary action - changed from "Mark as Mitigated")
+  - "Mark Resolved" (primary action)
   - "Mark as duplicate" (always available)
 - ✅ **Available Elements**:
   - **Post an Update section** (text box + post button) - **ONLY visible in this state**
-  - **Updates display** (always visible to show posted updates)
+  - **Updates display** (always visible inline to show posted updates immediately)
+- ❌ **Hidden Elements**:
+  - Show Resolution button
+  - Show Postmortem button
 - 📍 **Status Bar**: Shows "Mitigating" as active (green)
 
 #### Actions:
 - **Click "Mark Resolved"** → Changes state to `resolved`
-- **Post Updates** → Adds updates to incident timeline
+- **Post Updates** → Adds updates to incident timeline (visible immediately below text box)
 
 ---
 
@@ -52,16 +57,18 @@ reported → mitigating → resolved → postmortem → closed
 #### UI Elements:
 - ✅ **Buttons Available**: 
   - "Start Postmortem" (primary action)
+  - "Show Resolution" (opens side panel with posted updates)
   - "Mark as duplicate" (always available)
 - ❌ **Hidden Elements**:
   - Post an Update section (text box + post button)
+  - Show Postmortem button
+  - Inline updates display (now accessible via side panel)
 - 📍 **Status Bar**: 
   - Shows "Resolved" as active (green)
-  - **"Resolved" is clickable** → Toggles inline display of posted updates below state-change buttons
 
 #### Actions:
-- **Click "Start Postmortem"** → Changes state to `postmortem`
-- **Click "Resolved" in status bar** → Shows/hides posted updates inline
+- **Click "Start Postmortem"** → Changes state to `postmortem` and shows postmortem form
+- **Click "Show Resolution"** → Opens side panel displaying all posted updates from mitigation phase
 
 ---
 
@@ -71,18 +78,19 @@ reported → mitigating → resolved → postmortem → closed
 #### UI Elements:
 - ✅ **Buttons Available**: 
   - "Complete Postmortem" (primary action)
+  - "Show Resolution" (opens side panel with posted updates)
   - "Mark as duplicate" (always available)
 - ❌ **Hidden Elements**:
   - Post an Update section (text box + post button)
+  - Show Postmortem button
 - ✅ **Available Elements**:
-  - **Postmortem form** (appears below status buttons)
+  - **Postmortem form** (editable form for completing analysis)
 - 📍 **Status Bar**: 
   - Shows "Postmortem" as active (green)
-  - **"Mitigating" becomes clickable** → Opens modal to view posted updates
 
 #### Actions:
-- **Click "Complete Postmortem"** → Changes state to `closed` (requires all postmortem fields to be filled)
-- **Click "Mitigating" in status bar** → Opens updates modal
+- **Click "Complete Postmortem"** → Validates all postmortem fields and changes state to `closed` (automatically closes resolution side panel if validation fails)
+- **Click "Show Resolution"** → Opens side panel displaying all posted updates from mitigation phase
 
 ---
 
@@ -91,19 +99,26 @@ reported → mitigating → resolved → postmortem → closed
 
 #### UI Elements:
 - ✅ **Buttons Available**: 
-  - "Mark as duplicate" (only remaining button)
+  - "Show Resolution" (opens side panel with posted updates)
+  - "Show Postmortem" (toggles completed postmortem display, **active by default**)
+  - "Mark as duplicate" (always available)
 - ❌ **Hidden Elements**:
   - Primary action button (no more state transitions)
   - Post an Update section (text box + post button)
-  - Postmortem form (hidden after completion)
+  - Editable postmortem form
+- ✅ **Available Elements**:
+  - **Completed postmortem display** (read-only view below action buttons, **shown by default**)
 - 📍 **Status Bar**: 
   - Shows "Closed" as active (green)
-  - **"Mitigating" is clickable** → Opens modal to view posted updates
   - **"Closed" is clickable** → Opens modal to view completed postmortem
 
 #### Actions:
-- **Click "Mitigating" in status bar** → Opens updates modal
+- **Click "Show Resolution"** → Opens side panel displaying all posted updates from mitigation phase
+- **Click "Show Postmortem"** → Toggles display of completed postmortem analysis below action buttons
 - **Click "Closed" in status bar** → Opens postmortem modal
+
+#### Default Behavior:
+- **Show Postmortem is active by default** when incident loads in closed state
 
 ---
 
@@ -127,9 +142,6 @@ reported → mitigating → resolved → postmortem → closed
 ### Status Bar Hyperlinks
 | Current State | Clickable Status | Action |
 |---------------|------------------|---------|
-| `resolved` | "Resolved" | Toggle inline updates display |
-| `postmortem` | "Mitigating" | View updates modal |
-| `closed` | "Mitigating" | View updates modal |
 | `closed` | "Closed" | View postmortem modal |
 
 ---
@@ -157,19 +169,39 @@ const buttonTexts = {
 
 ### Conditional UI Rendering
 ```javascript
-// Post update section - only during mitigating
+// Post update section - only during mitigating (inline)
 {incident.status === 'mitigating' && (
   <PostUpdateSection />
 )}
 
-// Updates display - always visible during mitigating, togglable during resolved+
-{(incident.status === 'mitigating' || showInlineUpdates) && updates.length > 0 && (
-  <UpdatesSection />
+// Inline updates display - only visible during mitigating
+{incident.status === 'mitigating' && updates.length > 0 && (
+  <InlineUpdatesSection />
 )}
 
-// Postmortem form - only during postmortem
+// Show Resolution button - available from resolved state onwards
+{['resolved', 'postmortem', 'closed'].includes(incident.status) && (
+  <ShowResolutionButton />
+)}
+
+// Show Postmortem button - only available in closed state
+{incident.status === 'closed' && (
+  <ShowPostmortemButton />
+)}
+
+// Resolution side panel - opens when Show Resolution is clicked
+{showInlineUpdates && (
+  <ResolutionSidePanel />
+)}
+
+// Completed postmortem display - read-only view in closed state
+{showCompletedPostmortem && incident.status === 'closed' && (
+  <CompletedPostmortemDisplay />
+)}
+
+// Editable postmortem form - only during postmortem state
 {isPostmortemMode && incident.status === 'postmortem' && (
-  <PostmortemForm />
+  <EditablePostmortemForm />
 )}
 
 // Primary action button - hidden when closed
@@ -181,12 +213,6 @@ const buttonTexts = {
 ### Hyperlink Logic
 ```javascript
 const getStatusLink = (statusKey) => {
-  if (statusKey === 'resolved' && currentIndex >= 2) {
-    return () => setShowInlineUpdates(!showInlineUpdates);
-  }
-  if (statusKey === 'mitigating' && currentIndex >= 3) {
-    return () => setShowUpdatesModal(true);
-  }
   if (statusKey === 'closed' && currentIndex >= 4) {
     return () => setShowPostmortemModal(true);
   }
@@ -207,9 +233,16 @@ const getStatusLink = (statusKey) => {
 6. **Complete Analysis** → Fill postmortem form → Click "Complete Postmortem" → Status: `closed`
 
 ### Information Access:
-- **During/After Resolution**: Click "Resolved" in status bar to toggle inline view of all mitigation updates
-- **During/After Postmortem**: Click "Mitigating" in status bar to view updates in modal
+- **During/After Resolution**: Click "Show Resolution" button to open side panel with all mitigation updates
 - **After Closure**: Click "Closed" in status bar to view postmortem analysis in modal
+
+### Resolution Side Panel Features:
+- **Positioning**: Starts below main header (64px from top) to avoid overlay
+- **Resizable**: Drag left edge to adjust width (300px - 800px or 60% of screen)
+- **Default Width**: 384px (24rem)
+- **Multiple Close Options**: Close button (×), backdrop click, or toggle button
+- **Smooth Animations**: Slide-in/out transitions with proper z-indexing
+- **Independent Operation**: Works alongside postmortem form without interference
 
 ---
 
@@ -240,19 +273,31 @@ All fields are required before "Complete Postmortem" works:
 ## 🔍 Testing Checklist
 
 ### State Transition Testing:
-- [ ] reported → mitigating (button changes, post section appears)
-- [ ] mitigating → resolved (button changes, post section disappears, resolved clickable)
-- [ ] resolved → postmortem (button changes, postmortem form appears, mitigating clickable)
-- [ ] postmortem → closed (button disappears, form disappears, closed clickable)
+- [ ] reported → mitigating (button changes to "Mark Resolved", post section appears)
+- [ ] mitigating → resolved (button changes to "Start Postmortem", post section disappears, "Show Resolution" button appears)
+- [ ] resolved → postmortem (button changes to "Complete Postmortem", editable postmortem form appears)
+- [ ] postmortem → closed (primary button disappears, editable form disappears, "Show Postmortem" button appears, completed postmortem shows by default)
 
 ### UI Element Testing:
 - [ ] Post updates only visible during mitigating
-- [ ] Updates display always visible during mitigating state
-- [ ] Updates display toggles correctly when resolved status is clicked (resolved+ states)
-- [ ] Postmortem form only visible during postmortem  
-- [ ] Status hyperlinks work correctly
-- [ ] Modals display correct data for mitigating/closed states
-- [ ] Mark as duplicate always available
+- [ ] Inline updates display always visible during mitigating state
+- [ ] "Show Resolution" button only visible during resolved+ states
+- [ ] "Show Postmortem" button only visible during closed state
+- [ ] Resolution side panel opens/closes correctly when "Show Resolution" is clicked
+- [ ] Side panel has smooth slide-in/out animation
+- [ ] Side panel backdrop closes the panel when clicked
+- [ ] Side panel does not cover the main header (starts at 64px from top)
+- [ ] Side panel is resizable by dragging the left edge
+- [ ] Side panel respects minimum width (300px) and maximum width (60% of screen or 800px)
+- [ ] Resize cursor appears when hovering over resize handle
+- [ ] Editable postmortem form visible during postmortem state
+- [ ] Completed postmortem display visible when "Show Postmortem" is clicked in closed state
+- [ ] Completed postmortem is shown by default when incident loads in closed state
+- [ ] Resolution side panel works independently of postmortem displays
+- [ ] Complete Postmortem validation automatically closes resolution side panel on error
+- [ ] Status hyperlinks work correctly (only "Closed" has hyperlink)
+- [ ] Modals display correct data for closed state
+- [ ] Mark as duplicate always available in all states
 
 ### Validation Testing:
 - [ ] Cannot complete postmortem with empty fields
@@ -262,4 +307,4 @@ All fields are required before "Complete Postmortem" works:
 ---
 
 *Last Updated: 2024-01-15*  
-*Version: 1.2* 
+*Version: 4.0* 
