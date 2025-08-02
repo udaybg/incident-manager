@@ -715,76 +715,47 @@ const IncidentDetailPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Incident Details Master Page - Action Buttons */}
-              <div className="flex items-center justify-between">
-                {/* Left side: Details navigation buttons */}
-                <div className="flex items-center space-x-2">
+              {/* Incident Details Master Page - Navigation Tabs */}
+              <div className="flex items-center justify-between border-b border-gray-200">
+                {/* Left side: Navigation tabs */}
+                <div className="flex items-center space-x-0">
                   <button 
-                    onClick={() => setActiveDetailsPage(activeDetailsPage === 'incident' ? null : 'incident')}
-                    className={`flex items-center space-x-2 text-sm rounded-lg font-medium`}
-                    style={{
-                      backgroundColor: activeDetailsPage === 'incident' ? '#000000' : '#f9fafb',
-                      color: activeDetailsPage === 'incident' ? 'white' : '#374151',
-                      border: activeDetailsPage === 'incident' ? 'none' : '1px solid #d1d5db',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      padding: '8px 16px'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeDetailsPage !== 'incident') {
-                        e.target.style.backgroundColor = '#f3f4f6';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = activeDetailsPage === 'incident' ? '#000000' : '#f9fafb';
-                    }}
+                    onClick={() => setActiveDetailsPage('incident')}
+                    className={`flex items-center space-x-2 text-sm font-medium px-4 py-2 border-b-2 transition-colors ${
+                      activeDetailsPage === 'incident' 
+                        ? 'border-blue-600 text-blue-600 bg-blue-50' 
+                        : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                    }`}
                   >
-                    <span style={{backgroundColor: 'transparent'}}>📋</span>
-                    <span style={{backgroundColor: 'transparent'}}>Incident Details</span>
+                    <span>📋</span>
+                    <span>Incident Details</span>
                   </button>
 
                   {['mitigating', 'resolved'].includes(incident.status) && (
                     <button 
-                      onClick={() => setActiveDetailsPage(activeDetailsPage === 'mitigation' ? null : 'mitigation')}
-                      className={`flex items-center space-x-2 text-sm rounded-lg font-medium`}
-                      style={{
-                        backgroundColor: activeDetailsPage === 'mitigation' ? '#1d4ed8' : '#2563eb',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        padding: '8px 16px',
-                        color: 'white'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (activeDetailsPage !== 'mitigation') {
-                          e.target.style.backgroundColor = '#1d4ed8';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = activeDetailsPage === 'mitigation' ? '#1d4ed8' : '#2563eb';
-                      }}
+                      onClick={() => setActiveDetailsPage('mitigation')}
+                      className={`flex items-center space-x-2 text-sm font-medium px-4 py-2 border-b-2 transition-colors ${
+                        activeDetailsPage === 'mitigation' 
+                          ? 'border-blue-600 text-blue-600 bg-blue-50' 
+                          : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                      }`}
                     >
-                      <span style={{backgroundColor: 'transparent', color: 'white'}}>🔍</span>
-                      <span style={{backgroundColor: 'transparent', color: 'white'}}>Mitigation Details</span>
+                      <span>🔍</span>
+                      <span>Mitigation Details</span>
                     </button>
                   )}
 
                   {['postmortem', 'closed'].includes(incident.status) && (
                     <button 
-                      onClick={() => setActiveDetailsPage(activeDetailsPage === 'postmortem' ? null : 'postmortem')}
-                      className={`flex items-center space-x-2 text-sm rounded-lg text-white font-medium`}
-                      style={{
-                        backgroundColor: activeDetailsPage === 'postmortem' ? '#6d28d9' : '#7c3aed',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        padding: '8px 16px'
-                      }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#6d28d9'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = activeDetailsPage === 'postmortem' ? '#6d28d9' : '#7c3aed'}
+                      onClick={() => setActiveDetailsPage('postmortem')}
+                      className={`flex items-center space-x-2 text-sm font-medium px-4 py-2 border-b-2 transition-colors ${
+                        activeDetailsPage === 'postmortem' 
+                          ? 'border-blue-600 text-blue-600 bg-blue-50' 
+                          : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                      }`}
                     >
-                      <span style={{backgroundColor: 'transparent', color: 'white'}}>📄</span>
-                      <span style={{backgroundColor: 'transparent', color: 'white'}}>Postmortem Details</span>
+                      <span>📄</span>
+                      <span>Postmortem Details</span>
                     </button>
                   )}
                 </div>
@@ -858,9 +829,8 @@ const IncidentDetailPage = () => {
                 )}
               </div>
 
-              {/* Incident Details Master Page - State Pages */}
-              {activeDetailsPage && (
-                <div className="mt-6">
+              {/* Incident Details Master Page - Tab Content */}
+              <div className="mt-6">
                   {/* Page 1: Incident Details Created Details Page */}
                   {activeDetailsPage === 'incident' && (
                     <div className="space-y-4">
@@ -1392,11 +1362,10 @@ const IncidentDetailPage = () => {
                     </div>
                   )}
                 </div>
-              )}
 
-              {/* OLD SECTIONS - HIDDEN WHEN MASTER PAGE IS ACTIVE */}
+              {/* OLD SECTIONS - ALWAYS HIDDEN NOW (TABS ALWAYS ACTIVE) */}
               {/* Incident Details - Collapsible Sections */}
-              <div className="mt-6 space-y-4" style={{display: activeDetailsPage ? 'none' : 'block'}}>
+              <div className="mt-6 space-y-4" style={{display: 'none'}}>
                 {/* Section 1: Basic Information */}
                 <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
                   <button
