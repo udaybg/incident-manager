@@ -1492,10 +1492,771 @@ const IncidentDetailPage = () => {
                   )}
                 </div>
               </div>
+
+              {/* Completed Postmortem Display - Read-only view in closed state */}
+               {showCompletedPostmortem && incident.status === 'closed' && (
+                 <div className="mt-6 space-y-4">
+                   {/* Section 1: Postmortem Owners */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Postmortem Owners</h3>
+                     <div className="grid grid-cols-2 gap-4 text-sm">
+                       <div><strong>Author:</strong> {postmortemData.author || 'Not specified'}</div>
+                       <div><strong>Contributors:</strong> {postmortemData.contributors || 'Not specified'}</div>
+                       <div><strong>Organisation:</strong> {postmortemData.organisation || 'Not specified'}</div>
+                       <div><strong>Accountable Team:</strong> {postmortemData.accountableTeam || 'Not specified'}</div>
+                       <div><strong>Reviewers:</strong> {postmortemData.reviewers || 'Not specified'}</div>
+                       <div><strong>Bar Raiser:</strong> {postmortemData.barRaiser || 'Not specified'}</div>
+                     </div>
+                   </div>
+
+                   {/* Section 2: Incident Summary */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Incident Summary</h3>
+                     <div className="space-y-3 text-sm">
+                       <div>
+                         <strong>Executive Summary:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.executiveSummary || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Detailed Summary:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.detailedSummary || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Key Learnings:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.keyLearnings || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Mitigation Notes:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.mitigationNotes || 'Not provided'}</p>
+                       </div>
+                     </div>
+                   </div>
+
+                   {/* Section 3: Incident Timestamps */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Incident Timestamps</h3>
+                     <div className="grid grid-cols-2 gap-4 text-sm">
+                       <div><strong>Started At:</strong> {formatDateTime(postmortemData.startedAt) || 'Not specified'}</div>
+                       <div><strong>Detected At:</strong> {formatDateTime(postmortemData.detectedAt) || 'Not specified'}</div>
+                       <div><strong>Mitigated At:</strong> {formatDateTime(postmortemData.mitigatedAt) || 'Not specified'}</div>
+                       <div><strong>Resolved At:</strong> {formatDateTime(postmortemData.resolvedAt) || 'Not specified'}</div>
+                     </div>
+                   </div>
+
+                   {/* Section 4: Impact Assessment */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Impact Assessment</h3>
+                     <div className="space-y-3 text-sm">
+                       <div>
+                         <strong>Business Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.businessImpact || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Customer Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.customerImpact || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Stakeholder Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.stakeholderImpact || 'Not provided'}</p>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               )}
+
+               {/* Postmortem Section */}
+               {isPostmortemMode && (
+                 <div className="mt-6 space-y-4">
+                   {/* Section 1: Postmortem Owners */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('owners')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.owners ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Postmortem Owners</span>
+                       {postmortemSectionVisibility.owners ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.owners && (
+                       <div className="space-y-4">
+                         <div className="grid grid-cols-2 gap-4">
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Author *</label>
+                             <Input
+                               value={postmortemData.author}
+                               onChange={(e) => updatePostmortemData('author', e.target.value)}
+                               placeholder="Postmortem author"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Contributors *</label>
+                             <Input
+                               value={postmortemData.contributors}
+                               onChange={(e) => updatePostmortemData('contributors', e.target.value)}
+                               placeholder="Contributors (comma-separated)"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Organisation *</label>
+                             <Input
+                               value={postmortemData.organisation}
+                               onChange={(e) => updatePostmortemData('organisation', e.target.value)}
+                               placeholder="Organization"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Accountable Team *</label>
+                             <Input
+                               value={postmortemData.accountableTeam}
+                               onChange={(e) => updatePostmortemData('accountableTeam', e.target.value)}
+                               placeholder="Accountable team"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Reviewers *</label>
+                             <Input
+                               value={postmortemData.reviewers}
+                               onChange={(e) => updatePostmortemData('reviewers', e.target.value)}
+                               placeholder="Reviewers (comma-separated)"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Bar Raiser *</label>
+                             <Input
+                               value={postmortemData.barRaiser}
+                               onChange={(e) => updatePostmortemData('barRaiser', e.target.value)}
+                               placeholder="Bar raiser"
+                               className="w-full"
+                             />
+                           </div>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Section 2: Incident Summary */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('summary')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.summary ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Incident Summary</span>
+                       {postmortemSectionVisibility.summary ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.summary && (
+                       <div className="space-y-4">
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Executive Summary *</label>
+                           <Textarea
+                             value={postmortemData.executiveSummary}
+                             onChange={(e) => updatePostmortemData('executiveSummary', e.target.value)}
+                             placeholder="High-level summary for executives and stakeholders"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Summary *</label>
+                           <Textarea
+                             value={postmortemData.detailedSummary}
+                             onChange={(e) => updatePostmortemData('detailedSummary', e.target.value)}
+                             placeholder="Detailed technical summary of what happened"
+                             rows={4}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Key Learnings *</label>
+                           <Textarea
+                             value={postmortemData.keyLearnings}
+                             onChange={(e) => updatePostmortemData('keyLearnings', e.target.value)}
+                             placeholder="What we learned from this incident"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Mitigation Notes *</label>
+                           <Textarea
+                             value={postmortemData.mitigationNotes}
+                             onChange={(e) => updatePostmortemData('mitigationNotes', e.target.value)}
+                             placeholder="How the incident was mitigated"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Section 3: Incident Timestamps */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('timestamps')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.timestamps ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Incident Timestamps</span>
+                       {postmortemSectionVisibility.timestamps ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.timestamps && (
+                       <div className="space-y-4">
+                         <div className="grid grid-cols-2 gap-4">
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Started At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.startedAt ? new Date(postmortemData.startedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('startedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Detected At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.detectedAt ? new Date(postmortemData.detectedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('detectedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Mitigated At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.mitigatedAt ? new Date(postmortemData.mitigatedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('mitigatedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Resolved At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.resolvedAt ? new Date(postmortemData.resolvedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('resolvedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Section 4: Impact Assessment */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('impact')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.impact ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Impact Assessment</span>
+                       {postmortemSectionVisibility.impact ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.impact && (
+                       <div className="space-y-4">
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Business Impact *</label>
+                           <Textarea
+                             value={postmortemData.businessImpact}
+                             onChange={(e) => updatePostmortemData('businessImpact', e.target.value)}
+                             placeholder="How did this incident impact the business?"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Customer Impact *</label>
+                           <Textarea
+                             value={postmortemData.customerImpact}
+                             onChange={(e) => updatePostmortemData('customerImpact', e.target.value)}
+                             placeholder="How were customers affected?"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Stakeholder Impact *</label>
+                           <Textarea
+                             value={postmortemData.stakeholderImpact}
+                             onChange={(e) => updatePostmortemData('stakeholderImpact', e.target.value)}
+                             placeholder="How were internal stakeholders affected?"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+
+                 </div>
+               )}
+
+               
+
+               
             </div>
+
+            {/* Right Sidebar (1/4 width) - Hidden since we have collapsible sections */}
+            <div className="hidden">
+              <Card className="bg-white border border-gray-200 sticky top-6">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-bold text-gray-900">Incident Details</CardTitle>
+                    {!isEditMode ? (
+                      <button
+                        onClick={handleEnterEditMode}
+                        className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                        title="Edit incident details"
+                      >
+                        <Edit3 className="h-4 w-4 text-gray-600" />
+                      </button>
+                    ) : (
+                      <div className="flex items-center space-x-1">
+                        <button
+                          onClick={handleSaveChanges}
+                          disabled={isSaving}
+                          className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
+                          title="Save changes"
+                        >
+                          {isSaving && <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>}
+                          <span>{isSaving ? 'Saving...' : 'Save'}</span>
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="px-2 py-1 bg-gray-400 text-white text-xs rounded hover:bg-gray-500"
+                          title="Cancel editing"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                   <div className="space-y-2 text-xs">
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Commander</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.incident_commander || 'Not assigned'}</span>
+                      ) : (
+                        <Input
+                          type="email"
+                          value={editedIncident.incident_commander || ''}
+                          onChange={(e) => handleFieldChange('incident_commander', e.target.value)}
+                          className="text-xs font-medium border border-blue-500 w-32"
+                          placeholder="commander@company.com"
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Incident No</span>
+                      <span className="font-medium">#{incident.id}</span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Started</span>
+                      <div className="text-right">
+                        <div className="font-medium">{formatDateTime(incident.started_at)}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Detected</span>
+                      <div className="text-right">
+                        <div className="font-medium">{formatDateTime(incident.detected_at)}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Reported</span>
+                      <div className="text-right">
+                        <div className="font-medium">{formatDateTime(incident.created_at || incident.started_at)}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">TTD</span>
+                      <span className="font-medium">{calculateTTD(incident.started_at, incident.detected_at)}</span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Type</span>
+                      <span className="font-medium">{incident.incidentType?.toUpperCase() || 'PLANNED'}</span>
+                    </div>
+
+
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Reporting Org</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.reportingOrg || incident.reporting_org || 'Not specified'}</span>
+                      ) : (
+                        <Select value={editedIncident.reporting_org || ''} onValueChange={(value) => handleFieldChange('reporting_org', value)}>
+                          <SelectTrigger className="text-xs font-medium border border-blue-500 w-32">
+                            <SelectValue placeholder="Select organization" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getOptionsForField('reportingOrg').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Last Updated</span>
+                      <div className="text-right">
+                        <div className="font-medium">{formatDateTime(incident.updatedAt || incident.updated_at)}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Detection Source</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.detectionSource || incident.detection_source || 'Manual'}</span>
+                      ) : (
+                        <Select value={editedIncident.detection_source || ''} onValueChange={(value) => handleFieldChange('detection_source', value)}>
+                          <SelectTrigger className="text-xs font-medium border border-blue-500 w-32">
+                            <SelectValue placeholder="Select source" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getOptionsForField('detectionSources').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Safety & Compliance</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.safetyCompliance || incident.safety_compliance || 'Not known yet'}</span>
+                      ) : (
+                        <Input
+                          value={editedIncident.safety_compliance || ''}
+                          onChange={(e) => handleFieldChange('safety_compliance', e.target.value)}
+                          className="text-xs font-medium border border-blue-500 w-32"
+                          placeholder="Impact"
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Security & Privacy</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.securityPrivacy || incident.security_privacy || 'Not known yet'}</span>
+                      ) : (
+                        <Input
+                          value={editedIncident.security_privacy || ''}
+                          onChange={(e) => handleFieldChange('security_privacy', e.target.value)}
+                          className="text-xs font-medium border border-blue-500 w-32"
+                          placeholder="Impact"
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Data Quality</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.dataQuality || incident.data_quality || 'Not known yet'}</span>
+                      ) : (
+                        <Input
+                          value={editedIncident.data_quality || ''}
+                          onChange={(e) => handleFieldChange('data_quality', e.target.value)}
+                          className="text-xs font-medium border border-blue-500 w-32"
+                          placeholder="Impact"
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">PSD2 Review</span>
+                      {!isEditMode ? (
+                        <span className="font-medium">{incident.psd2Impact || incident.psd2_impact || 'Not known yet'}</span>
+                      ) : (
+                        <Select value={editedIncident.psd2_impact || ''} onValueChange={(value) => handleFieldChange('psd2_impact', value)}>
+                          <SelectTrigger className="text-xs font-medium border border-blue-500 w-32">
+                            <SelectValue placeholder="Select impact" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getOptionsForField('impactOptions').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+
+                    {/* L5 Confirmation Fields - only show for L5 incidents */}
+                    {(incident.level === 'L5' || (isEditMode && editedIncident.level === 'L5')) && (
+                      <>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">L5 Confirmation</span>
+                          {!isEditMode ? (
+                            <span className="font-medium">{incident.l5_confirmation ? 'Confirmed' : 'Not confirmed'}</span>
+                          ) : (
+                            <Checkbox
+                              checked={editedIncident.l5_confirmation || false}
+                              onCheckedChange={(checked) => handleFieldChange('l5_confirmation', checked)}
+                              className="border-blue-500"
+                            />
+                          )}
+                        </div>
+
+                        {/* Mitigation Policy Acknowledgment - only for L5 Medium/High */}
+                        {((incident.scope === 'Medium' || incident.scope === 'High') || 
+                          (isEditMode && (editedIncident.scope === 'Medium' || editedIncident.scope === 'High'))) && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Mitigation Policy</span>
+                            {!isEditMode ? (
+                              <span className="font-medium">{incident.mitigation_policy_acknowledgment ? 'Acknowledged' : 'Not acknowledged'}</span>
+                            ) : (
+                              <Checkbox
+                                checked={editedIncident.mitigation_policy_acknowledgment || false}
+                                onCheckedChange={(checked) => handleFieldChange('mitigation_policy_acknowledgment', checked)}
+                                className="border-blue-500"
+                              />
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Impacted Parties</span>
+                      {!isEditMode ? (
+                        <span className="font-medium text-right">
+                          {incident.impacted_parties && incident.impacted_parties.length > 0
+                            ? incident.impacted_parties.join(', ')
+                            : 'None'}
+                        </span>
+                      ) : (
+                        <MultiSelect
+                          values={editedIncident.impacted_parties || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_parties', values)}
+                          placeholder="Select parties"
+                          className="text-xs font-medium border border-blue-500 w-32"
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedParties').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Impacted Areas</span>
+                      {!isEditMode ? (
+                        <span className="font-medium text-right">
+                          {incident.impacted_areas && incident.impacted_areas.length > 0
+                            ? incident.impacted_areas.join(', ')
+                            : 'None'}
+                        </span>
+                      ) : (
+                        <MultiSelect
+                          values={editedIncident.impacted_areas || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_areas', values)}
+                          placeholder="Select areas"
+                          className="text-xs font-medium border border-blue-500 w-32"
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedAreas').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Impacted Assets</span>
+                      {!isEditMode ? (
+                        <span className="font-medium text-right">
+                          {incident.impacted_assets && incident.impacted_assets.length > 0
+                            ? incident.impacted_assets.join(', ')
+                            : 'None'}
+                        </span>
+                      ) : (
+                        <MultiSelect
+                          values={editedIncident.impacted_assets || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_assets', values)}
+                          placeholder="Select assets"
+                          className="text-xs font-medium border border-blue-500 w-32"
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedAssets').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Impacted Locations</span>
+                      {!isEditMode ? (
+                        <span className="font-medium text-right">
+                          {incident.impacted_locations && incident.impacted_locations.length > 0
+                            ? incident.impacted_locations.join(', ')
+                            : 'None'}
+                        </span>
+                      ) : (
+                        <MultiSelect
+                          values={editedIncident.impacted_locations || []}
+                          onValuesChange={(values) => handleFieldChange('impacted_locations', values)}
+                          placeholder="Select locations"
+                          className="text-xs font-medium border border-blue-500 w-32"
+                        >
+                          <SelectContent>
+                            {getOptionsForField('impactedLocations').map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </MultiSelect>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Related Documents</span>
+                        {isEditMode && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-1 h-6 w-6"
+                            onClick={() => {
+                              const currentDocs = editedIncident.related_documents || [];
+                              handleFieldChange('related_documents', [...currentDocs, { title: '', url: '' }]);
+                            }}
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {/* Display existing documents */}
+                      {!isEditMode ? (
+                        <div className="space-y-1">
+                          {incident.documents && incident.documents.length > 0 ? (
+                            incident.documents.map((doc, index) => (
+                              <div key={index} className="text-xs">
+                                <a 
+                                  href={doc.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-800 underline font-medium"
+                                >
+                                  {doc.title || 'Untitled Document'}
+                                </a>
+                              </div>
+                            ))
+                          ) : (
+                            <span className="text-xs font-medium text-right">None</span>
+                          )}
+                        </div>
+                      ) : (
+                        /* Edit mode - show editable inputs */
+                        <div className="space-y-2">
+                          {(editedIncident.related_documents || []).map((doc, index) => (
+                            <div key={index} className="flex space-x-2 items-center">
+                              <Input
+                                value={doc.title || doc.description || ''}
+                                onChange={(e) => {
+                                  const docs = [...(editedIncident.related_documents || [])];
+                                  docs[index] = { ...docs[index], title: e.target.value, description: e.target.value };
+                                  handleFieldChange('related_documents', docs);
+                                }}
+                                className="text-xs border border-blue-500 flex-1"
+                                placeholder="Document title"
+                              />
+                              <Input
+                                value={doc.url || ''}
+                                onChange={(e) => {
+                                  const docs = [...(editedIncident.related_documents || [])];
+                                  docs[index] = { ...docs[index], url: e.target.value };
+                                  handleFieldChange('related_documents', docs);
+                                }}
+                                className="text-xs border border-blue-500 flex-1"
+                                placeholder="Document URL"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="p-1 h-6 w-6 text-red-500"
+                                onClick={() => {
+                                  const docs = (editedIncident.related_documents || []).filter((_, i) => i !== index);
+                                  handleFieldChange('related_documents', docs);
+                                }}
+                              >
+                                ×
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
           </div>
         </div>
       </div>
+
+
+
+
+
 
       {/* Updates Modal */}
       {showUpdatesModal && (

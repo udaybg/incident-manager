@@ -1314,30 +1314,7 @@ const IncidentDetailPage = () => {
                   )}
                 </div>
 
-              {/* OLD SECTIONS - ALWAYS HIDDEN NOW (TABS ALWAYS ACTIVE) */}
-              {/* Incident Details - Collapsible Sections */}
-              <div className="mt-6 space-y-4" style={{display: 'none'}}>
-                {/* Section 1: Basic Information */}
-                <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
-                  <button
-                    type="button"
-                    onClick={() => toggleDetailSection('basicInfo')}
-                    className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.basicInfo ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
-                  >
-                    <span>Basic Information</span>
-                    {detailSectionVisibility.basicInfo ? (
-                      <ChevronUp className="h-5 w-5" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5" />
-                    )}
-                  </button>
-
-                  {detailSectionVisibility.basicInfo && (
-                    <div className="space-y-4">
-                      {/* Incident Type */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Type</label>
-                        <div className="text-gray-900">{incident.incidentType?.toUpperCase() || 'PLANNED'}</div>
+              {
                       </div>
 
                       {/* Contact Information Grid */}
@@ -1492,10 +1469,348 @@ const IncidentDetailPage = () => {
                   )}
                 </div>
               </div>
+
+              {/* Completed Postmortem Display - Read-only view in closed state */}
+               {showCompletedPostmortem && incident.status === 'closed' && (
+                 <div className="mt-6 space-y-4">
+                   {/* Section 1: Postmortem Owners */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Postmortem Owners</h3>
+                     <div className="grid grid-cols-2 gap-4 text-sm">
+                       <div><strong>Author:</strong> {postmortemData.author || 'Not specified'}</div>
+                       <div><strong>Contributors:</strong> {postmortemData.contributors || 'Not specified'}</div>
+                       <div><strong>Organisation:</strong> {postmortemData.organisation || 'Not specified'}</div>
+                       <div><strong>Accountable Team:</strong> {postmortemData.accountableTeam || 'Not specified'}</div>
+                       <div><strong>Reviewers:</strong> {postmortemData.reviewers || 'Not specified'}</div>
+                       <div><strong>Bar Raiser:</strong> {postmortemData.barRaiser || 'Not specified'}</div>
+                     </div>
+                   </div>
+
+                   {/* Section 2: Incident Summary */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Incident Summary</h3>
+                     <div className="space-y-3 text-sm">
+                       <div>
+                         <strong>Executive Summary:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.executiveSummary || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Detailed Summary:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.detailedSummary || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Key Learnings:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.keyLearnings || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Mitigation Notes:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.mitigationNotes || 'Not provided'}</p>
+                       </div>
+                     </div>
+                   </div>
+
+                   {/* Section 3: Incident Timestamps */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Incident Timestamps</h3>
+                     <div className="grid grid-cols-2 gap-4 text-sm">
+                       <div><strong>Started At:</strong> {formatDateTime(postmortemData.startedAt) || 'Not specified'}</div>
+                       <div><strong>Detected At:</strong> {formatDateTime(postmortemData.detectedAt) || 'Not specified'}</div>
+                       <div><strong>Mitigated At:</strong> {formatDateTime(postmortemData.mitigatedAt) || 'Not specified'}</div>
+                       <div><strong>Resolved At:</strong> {formatDateTime(postmortemData.resolvedAt) || 'Not specified'}</div>
+                     </div>
+                   </div>
+
+                   {/* Section 4: Impact Assessment */}
+                   <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
+                     <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Impact Assessment</h3>
+                     <div className="space-y-3 text-sm">
+                       <div>
+                         <strong>Business Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.businessImpact || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Customer Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.customerImpact || 'Not provided'}</p>
+                       </div>
+                       <div>
+                         <strong>Stakeholder Impact:</strong>
+                         <p className="mt-1 text-gray-700">{postmortemData.stakeholderImpact || 'Not provided'}</p>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               )}
+
+               {/* Postmortem Section */}
+               {isPostmortemMode && (
+                 <div className="mt-6 space-y-4">
+                   {/* Section 1: Postmortem Owners */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('owners')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.owners ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Postmortem Owners</span>
+                       {postmortemSectionVisibility.owners ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.owners && (
+                       <div className="space-y-4">
+                         <div className="grid grid-cols-2 gap-4">
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Author *</label>
+                             <Input
+                               value={postmortemData.author}
+                               onChange={(e) => updatePostmortemData('author', e.target.value)}
+                               placeholder="Postmortem author"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Contributors *</label>
+                             <Input
+                               value={postmortemData.contributors}
+                               onChange={(e) => updatePostmortemData('contributors', e.target.value)}
+                               placeholder="Contributors (comma-separated)"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Organisation *</label>
+                             <Input
+                               value={postmortemData.organisation}
+                               onChange={(e) => updatePostmortemData('organisation', e.target.value)}
+                               placeholder="Organization"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Accountable Team *</label>
+                             <Input
+                               value={postmortemData.accountableTeam}
+                               onChange={(e) => updatePostmortemData('accountableTeam', e.target.value)}
+                               placeholder="Accountable team"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Reviewers *</label>
+                             <Input
+                               value={postmortemData.reviewers}
+                               onChange={(e) => updatePostmortemData('reviewers', e.target.value)}
+                               placeholder="Reviewers (comma-separated)"
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Bar Raiser *</label>
+                             <Input
+                               value={postmortemData.barRaiser}
+                               onChange={(e) => updatePostmortemData('barRaiser', e.target.value)}
+                               placeholder="Bar raiser"
+                               className="w-full"
+                             />
+                           </div>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Section 2: Incident Summary */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('summary')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.summary ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Incident Summary</span>
+                       {postmortemSectionVisibility.summary ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.summary && (
+                       <div className="space-y-4">
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Executive Summary *</label>
+                           <Textarea
+                             value={postmortemData.executiveSummary}
+                             onChange={(e) => updatePostmortemData('executiveSummary', e.target.value)}
+                             placeholder="High-level summary for executives and stakeholders"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Summary *</label>
+                           <Textarea
+                             value={postmortemData.detailedSummary}
+                             onChange={(e) => updatePostmortemData('detailedSummary', e.target.value)}
+                             placeholder="Detailed technical summary of what happened"
+                             rows={4}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Key Learnings *</label>
+                           <Textarea
+                             value={postmortemData.keyLearnings}
+                             onChange={(e) => updatePostmortemData('keyLearnings', e.target.value)}
+                             placeholder="What we learned from this incident"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Mitigation Notes *</label>
+                           <Textarea
+                             value={postmortemData.mitigationNotes}
+                             onChange={(e) => updatePostmortemData('mitigationNotes', e.target.value)}
+                             placeholder="How the incident was mitigated"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Section 3: Incident Timestamps */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('timestamps')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.timestamps ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Incident Timestamps</span>
+                       {postmortemSectionVisibility.timestamps ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.timestamps && (
+                       <div className="space-y-4">
+                         <div className="grid grid-cols-2 gap-4">
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Started At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.startedAt ? new Date(postmortemData.startedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('startedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Detected At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.detectedAt ? new Date(postmortemData.detectedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('detectedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Mitigated At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.mitigatedAt ? new Date(postmortemData.mitigatedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('mitigatedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                           <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-2">Resolved At *</label>
+                             <Input
+                               type="datetime-local"
+                               value={postmortemData.resolvedAt ? new Date(postmortemData.resolvedAt).toISOString().slice(0, 16) : ''}
+                               onChange={(e) => updatePostmortemData('resolvedAt', e.target.value)}
+                               className="w-full"
+                             />
+                           </div>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+                   {/* Section 4: Impact Assessment */}
+                   <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                     <button
+                       type="button"
+                       onClick={() => togglePostmortemSection('impact')}
+                       className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${postmortemSectionVisibility.impact ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                     >
+                       <span>Impact Assessment</span>
+                       {postmortemSectionVisibility.impact ? (
+                         <ChevronUp className="h-5 w-5" />
+                       ) : (
+                         <ChevronDown className="h-5 w-5" />
+                       )}
+                     </button>
+
+                     {postmortemSectionVisibility.impact && (
+                       <div className="space-y-4">
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Business Impact *</label>
+                           <Textarea
+                             value={postmortemData.businessImpact}
+                             onChange={(e) => updatePostmortemData('businessImpact', e.target.value)}
+                             placeholder="How did this incident impact the business?"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Customer Impact *</label>
+                           <Textarea
+                             value={postmortemData.customerImpact}
+                             onChange={(e) => updatePostmortemData('customerImpact', e.target.value)}
+                             placeholder="How were customers affected?"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">Stakeholder Impact *</label>
+                           <Textarea
+                             value={postmortemData.stakeholderImpact}
+                             onChange={(e) => updatePostmortemData('stakeholderImpact', e.target.value)}
+                             placeholder="How were internal stakeholders affected?"
+                             rows={3}
+                             className="w-full"
+                           />
+                         </div>
+                       </div>
+                     )}
+                   </div>
+
+
+                 </div>
+               )}
+
+               
+
+               
             </div>
+
+            {
+
           </div>
         </div>
       </div>
+
+
+
+
+
 
       {/* Updates Modal */}
       {showUpdatesModal && (

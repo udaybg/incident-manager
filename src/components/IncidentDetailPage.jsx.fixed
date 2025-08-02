@@ -1492,11 +1492,6 @@ const IncidentDetailPage = () => {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Updates Modal */}
       {showUpdatesModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
