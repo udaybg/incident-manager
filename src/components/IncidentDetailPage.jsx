@@ -60,6 +60,21 @@ const IncidentDetailPage = () => {
   const [sidePanelWidth, setSidePanelWidth] = useState(384); // 24rem in pixels
   const [isResizing, setIsResizing] = useState(false);
   const [showCompletedPostmortem, setShowCompletedPostmortem] = useState(false);
+  
+  // Section visibility states for collapsible incident details (all expanded by default as per UX)
+  const [detailSectionVisibility, setDetailSectionVisibility] = useState({
+    basicInfo: true,
+    classification: true, 
+    timeline: true,
+    additional: true
+  });
+
+  const toggleDetailSection = (section) => {
+    setDetailSectionVisibility(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   // Handle side panel resizing
   const handleResizeStart = (e) => {
@@ -767,10 +782,212 @@ const IncidentDetailPage = () => {
                      <span>📋</span>
                      <span>{showCompletedPostmortem ? 'Hide Postmortem' : 'Show Postmortem'}</span>
                    </button>
-                 )}
-                                </div>
+                                 )}
+                               </div>
 
-               {/* Completed Postmortem Display - Read-only view in closed state */}
+              {/* Incident Details - Collapsible Sections */}
+              <div className="mt-6 space-y-4">
+                {/* Section 1: Basic Information */}
+                <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                  <button
+                    type="button"
+                    onClick={() => toggleDetailSection('basicInfo')}
+                    className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.basicInfo ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                  >
+                    <span>Basic Information</span>
+                    {detailSectionVisibility.basicInfo ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                  </button>
+
+                  {detailSectionVisibility.basicInfo && (
+                    <div className="space-y-4">
+                      {/* Title */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Title</label>
+                        <div className="text-lg font-semibold text-gray-900">{incident.title}</div>
+                      </div>
+
+                      {/* Description */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <div className="text-gray-700 p-3 bg-gray-50 rounded-lg">{incident.description}</div>
+                      </div>
+
+                      {/* Commander */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Commander</label>
+                        <div className="text-gray-900">{incident.incident_commander || 'Not assigned'}</div>
+                      </div>
+
+                      {/* Reporting Organization */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Organization</label>
+                        <div className="text-gray-900">{incident.reportingOrg || incident.reporting_org || 'Not specified'}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Section 2: Impact and Scope Classification */}
+                <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                  <button
+                    type="button"
+                    onClick={() => toggleDetailSection('classification')}
+                    className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.classification ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                  >
+                    <span>Impact and Scope Classification</span>
+                    {detailSectionVisibility.classification ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                  </button>
+
+                  {detailSectionVisibility.classification && (
+                    <div className="space-y-4">
+                      {/* Level & Scope */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Level & Scope</label>
+                        <div className="flex items-center">
+                          <span className={`${getLevelBackgroundColor(incident.level, incident.scope)} text-white px-3 py-2 rounded-l text-sm font-medium border-2 border-r-0 ${getScopeBorderColor(incident.level, incident.scope)}`}>
+                            {incident.level}
+                          </span>
+                          <span className={`bg-white text-black px-3 py-2 rounded-r text-sm font-medium border-2 border-l-0 ${getScopeBorderColor(incident.level, incident.scope)}`}>
+                            {incident.scope.toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Incident Type */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident Type</label>
+                        <div className="text-gray-900">{incident.incidentType?.toUpperCase() || 'PLANNED'}</div>
+                      </div>
+
+                      {/* Impacted Areas */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Areas</label>
+                        <div className="text-gray-900">{Array.isArray(incident.impacted_areas) ? incident.impacted_areas.join(', ') : (incident.impacted_areas || 'Not specified')}</div>
+                      </div>
+
+                      {/* Impacted Assets */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Assets</label>
+                        <div className="text-gray-900">{Array.isArray(incident.impacted_assets) ? incident.impacted_assets.join(', ') : (incident.impacted_assets || 'Not specified')}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Section 3: Timeline Information */}
+                <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                  <button
+                    type="button"
+                    onClick={() => toggleDetailSection('timeline')}
+                    className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.timeline ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                  >
+                    <span>Timeline Information</span>
+                    {detailSectionVisibility.timeline ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                  </button>
+
+                  {detailSectionVisibility.timeline && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Started</label>
+                        <div className="text-gray-900">{formatDateTime(incident.started_at)}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Detected</label>
+                        <div className="text-gray-900">{formatDateTime(incident.detected_at)}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Reported</label>
+                        <div className="text-gray-900">{formatDateTime(incident.created_at || incident.started_at)}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Time to Detection (TTD)</label>
+                        <div className="text-gray-900">{calculateTTD(incident.started_at, incident.detected_at)}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Last Updated</label>
+                        <div className="text-gray-900">{formatDateTime(incident.updatedAt || incident.updated_at)}</div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Detection Source</label>
+                        <div className="text-gray-900">{incident.detectionSource || incident.detection_source || 'Manual'}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Section 4: Additional Information */}
+                <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                  <button
+                    type="button"
+                    onClick={() => toggleDetailSection('additional')}
+                    className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.additional ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                  >
+                    <span>Additional Information</span>
+                    {detailSectionVisibility.additional ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                  </button>
+
+                  {detailSectionVisibility.additional && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Incident No</label>
+                        <div className="text-gray-900">#{incident.id}</div>
+                      </div>
+
+                      {/* Impacted Locations */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Locations</label>
+                        <div className="text-gray-900">{Array.isArray(incident.impacted_locations) ? incident.impacted_locations.join(', ') : (incident.impacted_locations || 'Not specified')}</div>
+                      </div>
+
+                      {/* Impacted Parties */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Parties</label>
+                        <div className="text-gray-900">{Array.isArray(incident.impacted_parties) ? incident.impacted_parties.join(', ') : (incident.impacted_parties || 'Not specified')}</div>
+                      </div>
+
+                      {/* Related Documents */}
+                      {incident.documents && incident.documents.length > 0 && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Related Documents</label>
+                          <div className="space-y-2">
+                            {incident.documents.map((doc, index) => (
+                              <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                                <ExternalLink className="h-4 w-4 text-gray-500" />
+                                <a 
+                                  href={doc.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:underline text-sm"
+                                >
+                                  {doc.title || doc.description || doc.url}
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Completed Postmortem Display - Read-only view in closed state */}
                {showCompletedPostmortem && incident.status === 'closed' && (
                  <div className="mt-6 space-y-4">
                    {/* Section 1: Postmortem Owners */}
