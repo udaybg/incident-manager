@@ -1003,7 +1003,6 @@ const IncidentDetailPage = () => {
                   {activeDetailsPage === 'mitigation' && (
                     <div className="space-y-4">
                       <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
-                        <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Mitigation Updates</h3>
                         
                         {/* Content based on incident status */}
                         {incident.status === 'mitigating' ? (
@@ -1039,7 +1038,6 @@ const IncidentDetailPage = () => {
                         {/* Saved Posts Timeline - Always show in Mitigation Details tab */}
                         {updates.length > 0 && (
                           <div className="space-y-3 mt-6">
-                            <h4 className="font-medium text-gray-900">Update History</h4>
                             {updates
                               .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
                               .map((update, index) => (
