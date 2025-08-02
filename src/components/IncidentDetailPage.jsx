@@ -1040,14 +1040,16 @@ const IncidentDetailPage = () => {
                         {updates.length > 0 && (
                           <div className="space-y-3 mt-6">
                             <h4 className="font-medium text-gray-900">Update History</h4>
-                            {updates.map((update, index) => (
-                              <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
-                                <div className="text-sm text-gray-600 mb-1">
-                                  <span className="font-medium">{update.timestamp}</span> by <span className="text-blue-600">{update.author}</span>
+                            {updates
+                              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                              .map((update, index) => (
+                                <div key={update.id || index} className="border-l-4 border-blue-500 pl-4 py-2">
+                                  <div className="text-sm text-gray-600 mb-1">
+                                    <span className="font-medium">{formatDateTime(update.created_at)}</span> by <span className="text-blue-600">{update.author}</span>
+                                  </div>
+                                  <div className="text-gray-900">{update.content}</div>
                                 </div>
-                                <div className="text-gray-900">{update.content}</div>
-                              </div>
-                            ))}
+                                ))}
                           </div>
                         )}
 
