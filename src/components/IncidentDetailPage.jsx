@@ -887,6 +887,36 @@ const IncidentDetailPage = () => {
                         )}
                       </div>
                       
+                      {/* Impact and Scope Classification Section */}
+                      <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                        <button
+                          type="button"
+                          onClick={() => toggleDetailSection('classification')}
+                          className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.classification ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                        >
+                          <span>Impact and Scope Classification</span>
+                          {detailSectionVisibility.classification ? (
+                            <ChevronUp className="h-5 w-5" />
+                          ) : (
+                            <ChevronDown className="h-5 w-5" />
+                          )}
+                        </button>
+                        {detailSectionVisibility.classification && (
+                          <div className="space-y-4">
+                            {/* Impacted Areas */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Areas</label>
+                              <div className="text-gray-900">{Array.isArray(incident.impacted_areas) ? incident.impacted_areas.join(', ') : (incident.impacted_areas || 'Not specified')}</div>
+                            </div>
+                            {/* Impacted Assets */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Assets</label>
+                              <div className="text-gray-900">{Array.isArray(incident.impacted_assets) ? incident.impacted_assets.join(', ') : (incident.impacted_assets || 'Not specified')}</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
                       {/* Timeline Information Section */}
                       <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
                         <button
@@ -930,6 +960,61 @@ const IncidentDetailPage = () => {
                           </div>
                         )}
                       </div>
+
+                      {/* Additional Information Section */}
+                      <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
+                        <button
+                          type="button"
+                          onClick={() => toggleDetailSection('additional')}
+                          className={`w-full flex items-center justify-between text-lg font-bold text-gray-900 hover:text-gray-700 ${detailSectionVisibility.additional ? 'border-b border-gray-200 pb-2' : 'pb-0'}`}
+                        >
+                          <span>Additional Information</span>
+                          {detailSectionVisibility.additional ? (
+                            <ChevronUp className="h-5 w-5" />
+                          ) : (
+                            <ChevronDown className="h-5 w-5" />
+                          )}
+                        </button>
+                        {detailSectionVisibility.additional && (
+                          <div className="space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Incident No</label>
+                              <div className="text-gray-900">#{incident.id}</div>
+                            </div>
+                            {/* Impacted Locations */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Locations</label>
+                              <div className="text-gray-900">{Array.isArray(incident.impacted_locations) ? incident.impacted_locations.join(', ') : (incident.impacted_locations || 'Not specified')}</div>
+                            </div>
+                            {/* Impacted Parties */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Impacted Parties</label>
+                              <div className="text-gray-900">{Array.isArray(incident.impacted_parties) ? incident.impacted_parties.join(', ') : (incident.impacted_parties || 'Not specified')}</div>
+                            </div>
+                            {/* Related Documents */}
+                            {incident.documents && incident.documents.length > 0 && (
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Related Documents</label>
+                                <div className="space-y-2">
+                                  {incident.documents.map((doc, index) => (
+                                    <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                                      <ExternalLink className="h-4 w-4 text-gray-500" />
+                                      <a 
+                                        href={doc.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline text-sm"
+                                      >
+                                        {doc.title || doc.description || doc.url}
+                                      </a>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
 
@@ -963,20 +1048,7 @@ const IncidentDetailPage = () => {
                           </div>
                         )}
 
-                        {/* Saved Posts Timeline */}
-                        {updates.length > 0 && (
-                          <div className="space-y-3 mt-6">
-                            <h4 className="font-medium text-gray-900">Update History</h4>
-                            {updates.map((update, index) => (
-                              <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
-                                <div className="text-sm text-gray-600 mb-1">
-                                  <span className="font-medium">{update.timestamp}</span> by <span className="text-blue-600">{update.author}</span>
-                                </div>
-                                <div className="text-gray-900">{update.content}</div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+
                       </div>
                     </div>
                   )}
