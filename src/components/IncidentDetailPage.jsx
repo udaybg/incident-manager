@@ -739,19 +739,26 @@ const IncidentDetailPage = () => {
                     <span>Incident Details</span>
                   </button>
 
-                  {incident.status === 'mitigating' && (
+                  {['mitigating', 'resolved'].includes(incident.status) && (
                     <button 
                       onClick={() => setActiveDetailsPage(activeDetailsPage === 'mitigation' ? null : 'mitigation')}
-                      className={`flex items-center space-x-2 text-sm rounded-lg text-white font-medium`}
+                      className={`flex items-center space-x-2 text-sm rounded-lg font-medium`}
                       style={{
                         backgroundColor: activeDetailsPage === 'mitigation' ? '#1d4ed8' : '#2563eb',
                         border: 'none',
                         borderRadius: '8px',
                         fontSize: '14px',
-                        padding: '8px 16px'
+                        padding: '8px 16px',
+                        color: 'white'
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = activeDetailsPage === 'mitigation' ? '#1d4ed8' : '#2563eb'}
+                      onMouseEnter={(e) => {
+                        if (activeDetailsPage !== 'mitigation') {
+                          e.target.style.backgroundColor = '#1d4ed8';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = activeDetailsPage === 'mitigation' ? '#1d4ed8' : '#2563eb';
+                      }}
                     >
                       <span style={{backgroundColor: 'transparent', color: 'white'}}>🔍</span>
                       <span style={{backgroundColor: 'transparent', color: 'white'}}>Mitigation Details</span>
@@ -1024,8 +1031,9 @@ const IncidentDetailPage = () => {
                       <div className="rounded-xl p-6 space-y-4 bg-white shadow-lg">
                         <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Mitigation Updates</h3>
                         
-                        {/* Post Update Text Box - Only show in mitigating state */}
-                        {incident.status === 'mitigating' && (
+                        {/* Content based on incident status */}
+                        {incident.status === 'mitigating' ? (
+                          /* Active mitigation - show text box */
                           <div className="space-y-2">
                             <Textarea
                               value={newUpdate}
@@ -1045,6 +1053,12 @@ const IncidentDetailPage = () => {
                                 <span>{isPostingUpdate ? 'Posting...' : 'Post Update'}</span>
                               </button>
                             </div>
+                          </div>
+                        ) : (
+                          /* Resolved state - show completion message */
+                          <div className="text-center py-8">
+                            <div className="text-gray-600 mb-2">✅ Mitigation Phase Completed</div>
+                            <div className="text-sm text-gray-500">All mitigation updates have been posted.</div>
                           </div>
                         )}
 
