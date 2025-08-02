@@ -438,7 +438,7 @@ const IncidentsListPage = () => {
                   className={`border-l-4 ${getIncidentBorderColor(incident.level, incident.scope)} bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer relative ${
                     incident.status === 'closed' ? 'opacity-70' : ''
                   }`}
-                  onClick={() => navigate(`/incident/${incident.id}`)}
+                  onClick={() => navigate(`/incidents/${incident.id}`)}
                 >
                   {/* Closed Incident Overlay */}
                   {incident.status === 'closed' && (
