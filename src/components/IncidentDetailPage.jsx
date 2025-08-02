@@ -721,22 +721,26 @@ const IncidentDetailPage = () => {
                 <div className="flex items-center space-x-2">
                   <button 
                     onClick={() => setActiveDetailsPage(activeDetailsPage === 'incident' ? null : 'incident')}
-                    className={`flex items-center space-x-2 text-sm rounded-lg font-medium ${
-                      activeDetailsPage === 'incident' 
-                        ? 'text-white border-none' 
-                        : 'text-gray-700 border border-gray-300'
-                    }`}
+                    className={`flex items-center space-x-2 text-sm rounded-lg font-medium`}
                     style={{
                       backgroundColor: activeDetailsPage === 'incident' ? '#000000' : '#f9fafb',
+                      color: activeDetailsPage === 'incident' ? 'white' : '#374151',
+                      border: activeDetailsPage === 'incident' ? 'none' : '1px solid #d1d5db',
                       borderRadius: '8px',
                       fontSize: '14px',
                       padding: '8px 16px'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = activeDetailsPage === 'incident' ? '#374151' : '#f3f4f6'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = activeDetailsPage === 'incident' ? '#000000' : '#f9fafb'}
+                    onMouseEnter={(e) => {
+                      if (activeDetailsPage !== 'incident') {
+                        e.target.style.backgroundColor = '#f3f4f6';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = activeDetailsPage === 'incident' ? '#000000' : '#f9fafb';
+                    }}
                   >
-                    <span>📋</span>
-                    <span>Incident Details</span>
+                    <span style={{backgroundColor: 'transparent'}}>📋</span>
+                    <span style={{backgroundColor: 'transparent'}}>Incident Details</span>
                   </button>
 
                   {['mitigating', 'resolved'].includes(incident.status) && (
