@@ -1304,9 +1304,9 @@ const IncidentDetailPage = () => {
                 </div>
               )}
 
-              {/* OLD SECTIONS - TO BE CLEANED UP BELOW */}
+              {/* OLD SECTIONS - HIDDEN WHEN MASTER PAGE IS ACTIVE */}
               {/* Incident Details - Collapsible Sections */}
-              <div className="mt-6 space-y-4">
+              <div className="mt-6 space-y-4" style={{display: activeDetailsPage ? 'none' : 'block'}}>
                 {/* Section 1: Basic Information */}
                 <div className="rounded-xl p-6 space-y-6 bg-white shadow-lg">
                   <button
