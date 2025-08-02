@@ -699,47 +699,43 @@ const IncidentDetailPage = () => {
               </Card>
 
                                                           {/* Action Buttons */}
-              <div className="flex items-center justify-between">
-                {/* Left: Incident Details Button */}
-                <button 
-                  className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                  style={{
-                    backgroundColor: '#1f2937',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    padding: '8px 16px'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#374151'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#1f2937'}
-                >
-                  <span>📋</span>
-                  <span>Incident Details</span>
-                </button>
+                            {incident.status === 'mitigating' ? (
+                /* Mitigating State: 3-button layout */
+                <div className="flex items-center justify-between">
+                  {/* Left: Incident Details Button - Gray */}
+                  <button 
+                    className="flex items-center space-x-2 text-sm rounded-lg text-gray-700 font-medium border border-gray-300"
+                    style={{
+                      backgroundColor: '#f9fafb',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      padding: '8px 16px'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#f9fafb'}
+                  >
+                    <span>📋</span>
+                    <span>Incident Details</span>
+                  </button>
 
-                {/* Center: Mark as Duplicate Button */}
-                <button 
-                  onClick={() => {
-                    // TODO: Implement mark as duplicate functionality
-                    alert('Mark as duplicate functionality to be implemented');
-                  }}
-                  className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
-                  style={{
-                    backgroundColor: '#6b7280',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    padding: '8px 16px'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#4b5563'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#6b7280'}
-                >
-                  <span>🔄</span>
-                  <span>Mark as duplicate</span>
-                </button>
+                  {/* Center: Mitigation Details Button - Blue */}
+                  <button 
+                    className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                    style={{
+                      backgroundColor: '#2563eb',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      padding: '8px 16px'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
+                  >
+                    <span style={{backgroundColor: 'transparent', color: 'white'}}>🔍</span>
+                    <span style={{backgroundColor: 'transparent', color: 'white'}}>Mitigation Details</span>
+                  </button>
 
-                {/* Right: Primary Action Button */}
-                {incident.status !== 'closed' && (
+                  {/* Right: Mark Resolved Button - Black */}
                   <button 
                     onClick={handleStatusUpdate}
                     disabled={isUpdatingStatus}
@@ -754,11 +750,52 @@ const IncidentDetailPage = () => {
                     onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#374151')}
                     onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#000000')}
                   >
-                    <span>▶</span>
-                    <span>{getButtonText(incident.status)}</span>
+                    <span style={{backgroundColor: 'transparent', color: 'white'}}>✓</span>
+                    <span style={{backgroundColor: 'transparent', color: 'white'}}>{getButtonText(incident.status)}</span>
                   </button>
-                )}
-                               </div>
+                </div>
+              ) : (
+                /* Other States: 2-button layout (preserving original for "reported" etc.) */
+                <div className="flex items-center justify-between">
+                  {/* Left: Incident Details Button - Black */}
+                  <button 
+                    className="flex items-center space-x-2 text-sm rounded-lg text-white font-medium"
+                    style={{
+                      backgroundColor: '#000000',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      padding: '8px 16px'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#374151'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#000000'}
+                  >
+                    <span style={{backgroundColor: 'transparent', color: 'white'}}>📋</span>
+                    <span style={{backgroundColor: 'transparent', color: 'white'}}>Incident Details</span>
+                  </button>
+
+                  {/* Right: Primary Action Button - Blue */}
+                  {incident.status !== 'closed' && (
+                    <button 
+                      onClick={handleStatusUpdate}
+                      disabled={isUpdatingStatus}
+                      className="flex items-center space-x-2 text-sm rounded-lg text-white disabled:opacity-50 font-medium"
+                      style={{
+                        backgroundColor: '#2563eb',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        padding: '8px 16px'
+                      }}
+                      onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#1d4ed8')}
+                      onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#2563eb')}
+                    >
+                      <span style={{backgroundColor: 'transparent', color: 'white'}}>▶</span>
+                      <span style={{backgroundColor: 'transparent', color: 'white'}}>{getButtonText(incident.status)}</span>
+                    </button>
+                  )}
+                </div>
+              )}
 
               {/* Secondary Action Buttons - Second Row */}
               <div className="flex items-center space-x-2 mt-3">
