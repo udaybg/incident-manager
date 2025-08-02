@@ -913,30 +913,30 @@ const IncidentDetailPage = () => {
                           )}
                         </button>
                         {detailSectionVisibility.timeline && (
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-6">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Incident Started At</label>
-                                <div className="text-gray-900">{formatDateTime(incident.started_at)}</div>
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Incident Detected At</label>
-                                <div className="text-gray-900">{formatDateTime(incident.detected_at)}</div>
-                              </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Started</label>
+                              <div className="text-gray-900">{formatDateTime(incident.started_at)}</div>
                             </div>
-                            <div className="grid grid-cols-3 gap-6">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Time to Detection (TTD)</label>
-                                <div className="text-gray-900">{calculateTTD(incident.started_at, incident.detected_at)}</div>
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Detection Source</label>
-                                <div className="text-gray-900">{incident.detectionSource || incident.detection_source || 'Manual'}</div>
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Last Updated</label>
-                                <div className="text-gray-900">{formatDateTime(incident.updatedAt || incident.updated_at)}</div>
-                              </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Detected</label>
+                              <div className="text-gray-900">{formatDateTime(incident.detected_at)}</div>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Reported</label>
+                              <div className="text-gray-900">{formatDateTime(incident.created_at || incident.started_at)}</div>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Time to Detection (TTD)</label>
+                              <div className="text-gray-900">{calculateTTD(incident.started_at, incident.detected_at)}</div>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Last Updated</label>
+                              <div className="text-gray-900">{formatDateTime(incident.updatedAt || incident.updated_at)}</div>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Detection Source</label>
+                              <div className="text-gray-900">{incident.detectionSource || incident.detection_source || 'Manual'}</div>
                             </div>
                           </div>
                         )}
@@ -1868,26 +1868,7 @@ const IncidentDetailPage = () => {
                  </div>
                )}
 
-               {/* Post an Update - Only show during mitigating status */}
-               {incident.status === 'mitigating' && (
-                 <div className="flex items-center space-x-2 mb-3">
-                   <Textarea
-                     value={newUpdate}
-                     onChange={(e) => setNewUpdate(e.target.value)}
-                     placeholder="Post an update about this incident..."
-                     rows={2}
-                     className="flex-1 text-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 rounded-lg border border-black"
-                     style={{ backgroundColor: '#dbdfe3' }}
-                   />
-                   <Button 
-                     onClick={handlePostUpdate}
-                     disabled={isPostingUpdate || !newUpdate.trim()}
-                     className="bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center p-2 rounded-lg"
-                   >
-                     <Send className="h-4 w-4" />
-                   </Button>
-                 </div>
-               )}
+               
 
                {/* Updates Display - Only visible during mitigating (inline) */}
                {incident.status === 'mitigating' && updates.length > 0 && (
